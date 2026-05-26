@@ -1,0 +1,6 @@
+{
+  "name": "Dushanbe City Wallet",
+  "description": "A highly polished, interactive replica of the Dushanbe City mobile wallet dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
