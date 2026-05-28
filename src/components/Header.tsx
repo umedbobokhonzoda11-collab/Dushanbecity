@@ -29,15 +29,15 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           id="btn-hamburger"
           onClick={() => setIsSidebarOpen(true)}
-          className="flex flex-col justify-between w-6 h-5 cursor-pointer group focus:outline-none transition-transform active:scale-90"
+          className="flex flex-col justify-between w-5 h-4 cursor-pointer group focus:outline-none transition-transform active:scale-90"
         >
-          <span className="w-6 h-[3px] bg-[#1861D5] rounded-full transition-transform"></span>
-          <span className="w-4 h-[3px] bg-[#1861D5] rounded-full self-start transition-all group-hover:w-6"></span>
-          <span className="w-5 h-[3px] bg-[#1861D5] rounded-full self-start transition-all group-hover:w-6"></span>
+          <span className="w-5 h-[2.5px] bg-[#1861D5] rounded-full transition-transform"></span>
+          <span className="w-3.5 h-[2.5px] bg-[#1861D5] rounded-full self-start transition-all group-hover:w-5"></span>
+          <span className="w-4 h-[2.5px] bg-[#1861D5] rounded-full self-start transition-all group-hover:w-5"></span>
         </button>
 
         {/* Action Controls */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-5">
           {/* Notification Button */}
           {activeTab === 'home' && (
             <button
@@ -45,8 +45,8 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onOpenNotifications}
               className="text-slate-600 hover:text-[#1861D5] active:scale-95 transition-all relative"
             >
-              <Bell size={24} className="stroke-[1.8]" />
-              <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full" />
+              <Bell size={19} className="stroke-[1.8]" />
+              <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
             </button>
           )}
 
@@ -57,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onOpenSupport}
               className="text-slate-600 hover:text-[#1861D5] active:scale-95 transition-all"
             >
-              <Headphones size={24} className="stroke-[1.8]" />
+              <Headphones size={19} className="stroke-[1.8]" />
             </button>
           )}
 
@@ -68,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onOpenSearch}
               className="text-[#1861D5] hover:opacity-80 active:scale-95 transition-all animate-fade-in"
             >
-              <Search size={24} className="stroke-[2.2]" />
+              <Search size={19} className="stroke-[2.2]" />
             </button>
           )}
         </div>

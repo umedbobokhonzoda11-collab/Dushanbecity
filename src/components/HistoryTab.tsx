@@ -21,6 +21,81 @@ const DCReceiptLogo: React.FC<{ className?: string }> = ({ className = 'w-[125px
   );
 };
 
+// High fidelity mock statement transaction values matching the uploaded screenshot exactly
+const statementGroups = [
+  {
+    group: 'Сегодня',
+    items: [
+      {
+        id: 'st-1',
+        topLine1: 'DCWallet*DCWallet**TAJIKISTAN',
+        topLine2: '--781110204-Anor',
+        cardNo: '9762 0000 0539 9372',
+        bottomLabel: 'Списание / операция по счету',
+        amount: '-1.00',
+        time: '06:24:11',
+        date: '25.05.2026',
+        opNumber: '1781110204',
+        provider: 'Anor',
+        sender: '9762 0000 0539 9372',
+        receiver: '781110204',
+      }
+    ]
+  },
+  {
+    group: 'Вчера',
+    items: [
+      {
+        id: 'st-2',
+        topLine1: 'DCWallet*WDC0000**TAJIKISTAN',
+        topLine2: '992988479974-992003633535-',
+        cardNo: '9762 0000 0539 9372',
+        bottomLabel: 'Дебетная часть P2P/операции',
+        amount: '-2.50',
+        time: '18:51:05',
+        date: '24.05.2026',
+        opNumber: '1730605655',
+        provider: 'DC (по номеру телефона)',
+        sender: '9762 0000 0539 9372',
+        receiver: '992003633535',
+      },
+      {
+        id: 'st-3',
+        topLine1: 'DCWallet*DCWallet**TAJIKISTAN',
+        topLine2: '--781110204-Anor',
+        cardNo: '9762 0000 0539 9372',
+        bottomLabel: 'Списание / операция по счету',
+        amount: '-65.00',
+        time: '07:53:34',
+        date: '24.05.2026',
+        opNumber: '1781110205',
+        provider: 'Anor',
+        sender: '9762 0000 0539 9372',
+        receiver: '781110204',
+      }
+    ]
+  },
+  {
+    group: '23.05.2026',
+    items: [
+      {
+        id: 'st-4',
+        topLine1: '*DCWallet**TAJIKISTAN',
+        topLine2: '--939631818-«Алиф Банк», alif mo',
+        cardNo: '9762 0000 0539 9372',
+        bottomLabel: 'Списание / операция по счету',
+        amount: '-12.00',
+        time: '21:00:14',
+        date: '23.05.2026',
+        opNumber: '1793963182',
+        provider: 'Алиф Банк',
+        sender: '9762 0000 0539 9372',
+        receiver: '939631818',
+      }
+    ]
+  }
+];
+
 export const HistoryTab: React.FC<HistoryTabProps> = ({
   transactions,
   onClearHistory,
@@ -128,11 +203,26 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
     setIsFavorite(false);
   };
 
+  const handleSelectStatementItem = (item: typeof statementGroups[0]['items'][0]) => {
+    setSelectedReceipt({
+      date: item.date,
+      time: item.time,
+      opNumber: item.opNumber,
+      provider: item.provider,
+      sender: item.sender,
+      receiver: item.receiver,
+      amount: String(Math.abs(parseFloat(item.amount)).toFixed(2)),
+      fee: '0.00',
+      status: 'Успешный',
+    });
+    setIsFavorite(false);
+  };
+
   return (
-    <div className="min-h-full bg-white pb-32 flex flex-col pt-0 relative select-none">
+    <div className="flex-1 bg-[#F8FAFC] flex flex-col pt-0 relative select-none min-h-0">
       
-      {/* 1. Header Navigation sub-tabs matching the image exactly */}
-      <div className="flex bg-white sticky top-0 z-10 w-full border-b border-slate-100">
+      {/* 1. Header Navigation sub-tabs - shrink-0 ensures it stays statically fixed at the top */}
+      <div className="flex bg-white w-full border-b border-slate-100 shrink-0">
         <button 
           onClick={() => setSubTab('operations')}
           className={`flex-1 text-center py-4 font-black text-[15px] tracking-tight transition-all border-b-[2.5px] ${
@@ -156,7 +246,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
       </div>
 
       {subTab === 'operations' ? (
-        <div className="flex-1 flex flex-col animate-scale-up">
+        <div className="flex-1 overflow-y-auto pb-32 pt-1 flex flex-col select-none animate-scale-up">
           
           {/* 2. "Обновлено: 24.05.26 - 23:13" & circular checkmark icon */}
           <div className="flex items-center justify-center gap-1 text-[#8B9AA8] text-[11px] font-bold mt-4 select-none">
@@ -253,17 +343,64 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
 
         </div>
       ) : (
-        /* Empty / simulation block for Statement */
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-24 text-center animate-scale-up">
-          <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+        <div className="flex-1 overflow-y-auto pb-32 pt-1 flex flex-col select-none animate-scale-up">
+          
+          {/* 1. "Обновлено: 25.05.26 - 06:29" & circular checkmark icon as seen on the screenshot */}
+          <div className="flex items-center justify-center gap-1 text-[#8B9AA8] text-[11px] font-bold mt-4 select-none">
+            <span>Обновлено: 25.05.26 - 06:29</span>
+            <div className="w-[13px] h-[13px] rounded-full border border-[#005FF7] flex items-center justify-center text-[7.5px] font-black text-[#005FF7] leading-none select-none ml-0.5 shrink-0">
+              ✓
+            </div>
           </div>
-          <h3 className="font-extrabold text-[15px] text-slate-800 mb-1">Выписка счета</h3>
-          <p className="text-xs text-slate-400 max-w-[220px] leading-relaxed">
-            У вас нет сформированных электронных выписок за выбранный период.
-          </p>
+
+          {/* Render Groups precisely */}
+          {statementGroups.map((group) => (
+            <div key={group.group} className="flex flex-col mt-4">
+              
+              {/* Group Pill Badge (Сегодня, Вчера, 23.05.2026) */}
+              <div className="flex justify-center mb-2.5">
+                <span className="bg-[#E4ECF6] text-[#3D5A80] text-[10.5px] font-extrabold px-4.5 py-1 rounded-full select-none tracking-tight">
+                  {group.group}
+                </span>
+              </div>
+
+              {/* White Container Card holding group items */}
+              <div className="mx-4.5 bg-white border border-slate-100 rounded-[24px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] px-4.5 py-1 divide-y divide-slate-100/70">
+                {group.items.map((item) => (
+                  <div 
+                    key={item.id}
+                    onClick={() => handleSelectStatementItem(item)}
+                    className="flex justify-between items-start py-4 cursor-pointer hover:bg-slate-50/50 active:scale-[0.99] transition-all rounded-2xl px-2.5 -mx-2.5"
+                  >
+                    <div className="flex-1 text-left pr-2 space-y-0.5">
+                      <div className="text-[10px] text-[#8B9AA8] font-bold font-sans tracking-tight uppercase leading-snug">
+                        {item.topLine1}
+                      </div>
+                      <div className="text-[10px] text-[#8B9AA8] font-bold font-sans tracking-tight uppercase leading-snug">
+                        {item.topLine2}
+                      </div>
+                      <div className="text-[16px] font-black text-slate-900 tracking-wide mt-1.5 mb-1.5 font-sans">
+                        {item.cardNo}
+                      </div>
+                      <div className="text-[11.5px] text-[#8B9AA8] font-medium font-sans">
+                        {item.bottomLabel}
+                      </div>
+                    </div>
+                    <div className="text-right flex flex-col items-end pt-1 shrink-0">
+                      <span className="text-[17px] font-black text-slate-800 font-sans tracking-tight">
+                        {item.amount}
+                      </span>
+                      <span className="text-[11px] text-[#8B9AA8] font-medium font-mono mt-1">
+                        {item.time}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          ))}
+
         </div>
       )}
 

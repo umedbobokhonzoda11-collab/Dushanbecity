@@ -51,11 +51,11 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
   };
 
   return (
-    <div className="px-5 py-1.5 select-none flex items-stretch gap-1.5">
+    <div className="pl-5 pr-2 py-1.5 select-none flex items-stretch gap-1.5">
       {/* Primary Balance Display Card */}
       <div 
         id="balance-container"
-        className="flex-1 bg-[#1479FF] text-white rounded-[24px] py-[18px] px-6 shadow-md shadow-[#1479FF]/15 flex flex-col justify-between relative overflow-hidden"
+        className="flex-1 bg-[#1479FF] text-white rounded-[21px] py-[18px] px-6 shadow-md shadow-[#1479FF]/15 flex flex-col justify-between relative overflow-hidden"
       >
         {/* Subtle decorative vector backdrop glow */}
         <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -107,7 +107,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
       {/* Auxiliary Grid shortcut white box on the right */}
       <div 
         onClick={() => setShowQrModal(true)}
-        className="w-[58px] bg-white border border-slate-100 hover:border-slate-200 active:scale-95 transition-all text-[#1479FF] rounded-[24px] flex items-center justify-center cursor-pointer shadow-xs"
+        className="w-[58px] bg-white border border-slate-100 hover:border-slate-200 active:scale-95 transition-all text-[#1479FF] rounded-[21px] flex items-center justify-center cursor-pointer shadow-xs"
       >
         <div id="quick-widget-trigger" className="flex flex-col items-center">
           <div className="grid grid-cols-2 gap-1 p-1 bg-[#f1f5f9] rounded-xl text-[#1479FF]">

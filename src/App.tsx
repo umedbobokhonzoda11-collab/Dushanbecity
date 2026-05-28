@@ -150,7 +150,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center py-4 md:py-8 font-sans antialiased text-slate-800">
+    <div className="h-screen w-screen bg-white md:bg-slate-100 flex items-center justify-center font-sans antialiased text-slate-800 overflow-hidden relative">
       
       {/* 
         PREMIUM RESPONSIVE VIEWPORT CARD WRAPPER
@@ -158,11 +158,11 @@ export default function App() {
       */}
       <div 
         id="phone-device-wrapper"
-        className="w-full max-w-[430px] h-full min-h-[100vh] md:min-h-[880px] md:h-[880px] bg-white overflow-hidden relative flex flex-col justify-between"
+        className="w-full max-w-[430px] h-full md:h-[840px] bg-white overflow-hidden relative flex flex-col justify-between md:rounded-[40px] md:shadow-[0_24px_50px_rgba(0,0,0,0.15)] md:border-[10px] md:border-slate-900 transition-all duration-300"
       >
-        {/* Outer content container - switches background to clean white when on History tab */}
-        <div className={`flex-1 overflow-y-auto pt-0 relative min-h-0 transition-colors duration-200 ${
-          activeTab === 'history' ? 'bg-white' : 'bg-white'
+        {/* Outer content container with clean white background */}
+        <div className={`flex-1 pt-0 relative min-h-0 bg-white flex flex-col ${
+          activeTab === 'history' ? 'overflow-hidden' : 'overflow-y-auto'
         }`}>
           
           {/* Header toolbar sitting at global view levels */}

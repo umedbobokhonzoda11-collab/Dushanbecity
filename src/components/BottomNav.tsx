@@ -14,12 +14,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onTriggerScanner,
 }) => {
   return (
-    <div className="fixed bottom-4 inset-x-5 z-40 select-none">
-      {/* Container holding bottom interactive floating menu with blur/shadow */}
-      <div 
-        id="floating-bottom-nav"
-        className="bg-white/90 backdrop-blur-md border border-slate-100/80 p-2 rounded-[28px] shadow-xl shadow-slate-200/50 flex items-center justify-between"
-      >
+    <div 
+      id="floating-bottom-nav"
+      className="absolute bottom-0 left-0 right-0 z-40 select-none bg-white/95 backdrop-blur-md border-t border-slate-100/90 px-4 pb-5 pt-2 shadow-[0_-8px_30px_rgba(148,163,184,0.08)] flex items-center justify-between"
+    >
         {/* Tab 1: Главная (Home) */}
         <button
           onClick={() => onChangeTab('home')}
@@ -102,7 +100,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             <span className="text-[10px] font-bold mt-1 tracking-tight font-sans">История</span>
           </div>
         </button>
-      </div>
     </div>
   );
 };
