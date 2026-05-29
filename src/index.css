@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html, body {
+  background-color: #0a0a0c;
+}
+
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", monospace;

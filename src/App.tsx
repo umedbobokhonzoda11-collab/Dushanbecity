@@ -273,6 +273,12 @@ export default function App() {
           onTriggerScanner={() => setShowScanner(true)}
         />
 
+        {/* 
+          Sleek dark bottom safe bar backing to integrate seamlessly 
+          with Android's 3-button system navigation bar or gesture bar region
+        */}
+        <div className="absolute bottom-0 left-0 right-0 h-3 bg-black z-30 pointer-events-none md:hidden" />
+
         {/* ==========================================
             GLOBAL CONTEXTUAL MODALS CONTROLS
            ========================================== */}
