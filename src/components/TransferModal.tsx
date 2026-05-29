@@ -20,6 +20,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
   const [card, setCard] = useState('');
   const [sumStr, setSumStr] = useState('');
   const [status, setStatus] = useState<'form' | 'confirm' | 'success'>('form');
+  const [isSuccessCompleted, setIsSuccessCompleted] = useState(false);
   const [errorStr, setErrorStr] = useState('');
   const [recipient, setRecipient] = useState('');
 
@@ -90,9 +91,14 @@ export const TransferModal: React.FC<TransferModalProps> = ({
       ? `${prefix}${phone}`
       : `Интиқол ба корт **** ${card.slice(-4)}`;
 
-    onTransferComplete(rec, val);
-    onAddTransaction(txTitle, -val, 'Переводы');
+    setIsSuccessCompleted(false);
     setStatus('success');
+
+    setTimeout(() => {
+      onTransferComplete(rec, val);
+      onAddTransaction(txTitle, -val, 'Переводы');
+      setIsSuccessCompleted(true);
+    }, 500);
   };
 
   const formatCardNumber = (value: string) => {
@@ -375,7 +381,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
           {/* SUCCESS SCREEN OVERLAY - EXTREMELY EXACT MATCH OF SCREENSHOT 2 */}
           {status === 'success' && (
             <div className="absolute inset-x-0 bottom-0 top-0 bg-[#07162C]/40 z-30 flex flex-col justify-end animate-fade-in duration-200">
-              <div className="absolute inset-0" onClick={onClose} />
+              <div className="absolute inset-0" onClick={isSuccessCompleted ? onClose : undefined} />
               
               {/* Drawer bottom container */}
               <div className="relative bg-white rounded-t-[30px] shadow-2xl z-40 px-5 pt-3.5 pb-6 animate-slide-up flex flex-col w-full border-t border-slate-100">
@@ -383,20 +389,31 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                 {/* Handle indicator bar */}
                 <div className="w-11 h-1 bg-[#E2E8F0] rounded-full mx-auto mb-5 shrink-0" />
 
-                {/* Checked Circle from Screenshot */}
+                {/* Checked Circle or Yellow Clock from Screenshot depending on completed state */}
                 <div className="flex justify-center mt-1 mb-3.5 select-none">
-                  <div className="w-[74px] h-[74px] bg-[#E5F9F6] rounded-full flex items-center justify-center">
-                    <div className="w-[32px] h-[32px] rounded-full border-[2.2px] border-[#20C997] bg-[#E5F9F6] flex items-center justify-center text-[#20C997]">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className="w-[11px] h-[11px]">
-                        <polyline points="20 6 9 17 4 12" />
+                  {isSuccessCompleted ? (
+                    <div className="w-[74px] h-[74px] bg-[#E5F9F6] rounded-full flex items-center justify-center animate-scale-in">
+                      <div className="w-[32px] h-[32px] rounded-full border-[2.2px] border-[#20C997] bg-[#E5F9F6] flex items-center justify-center text-[#20C997]">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className="w-[11px] h-[11px]">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-[74px] h-[74px] bg-[#FFF2E2] rounded-full flex items-center justify-center">
+                      <svg viewBox="0 0 24 24" fill="none" className="w-[32px] h-[32px] stroke-[#C36C30]" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="9" />
+                        <polyline points="12 7 12 12 15 12" />
                       </svg>
                     </div>
-                  </div>
+                  )}
                 </div>
 
-                {/* Dynamic Title with Bright Blue color */}
-                <h2 className="text-[#1479FF] font-bold text-[22.5px] text-center tracking-tight mb-5 font-sans leading-none">
-                  Платеж выполнен
+                {/* Dynamic Title */}
+                <h2 className={`font-bold text-[22.5px] text-center tracking-tight mb-5 font-sans leading-none transition-colors duration-300 ${
+                  isSuccessCompleted ? 'text-[#1479FF]' : 'text-[#C56C2B]'
+                }`}>
+                  {isSuccessCompleted ? 'Платеж выполнен' : 'Выполняется'}
                 </h2>
 
                 {/* White-gray card container with exact options matching screenshot */}
@@ -444,8 +461,9 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                 <div className="shrink-0">
                   <button
                     type="button"
+                    disabled={!isSuccessCompleted}
                     onClick={onClose}
-                    className="w-full bg-[#1479FF] hover:bg-[#0c66db] text-white font-extrabold py-4 rounded-[20px] text-[16.5px] tracking-wide transition-all cursor-pointer text-center select-none shadow-md shadow-blue-500/10 active:scale-[0.98] duration-100 font-sans"
+                    className="w-full bg-[#1479FF] hover:bg-[#0c66db] text-white font-extrabold py-4 rounded-[20px] text-[16.5px] tracking-wide transition-all text-center select-none shadow-md shadow-blue-500/10 duration-200 font-sans cursor-pointer active:scale-[0.98]"
                   >
                     На главную
                   </button>

@@ -149,7 +149,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#F4F6FB] md:bg-slate-100 flex items-center justify-center font-sans antialiased text-slate-800 overflow-hidden relative">
+    <div className="h-screen w-screen bg-white md:bg-slate-100 flex items-center justify-center font-sans antialiased text-slate-800 overflow-hidden relative">
       
       {/* 
         PREMIUM RESPONSIVE VIEWPORT CARD WRAPPER
@@ -157,15 +157,15 @@ export default function App() {
       */}
       <div 
         id="phone-device-wrapper"
-        className="w-full max-w-[430px] h-full md:h-[840px] bg-[#F4F6FB] overflow-hidden relative flex flex-col justify-between md:rounded-[40px] md:shadow-[0_24px_50px_rgba(0,0,0,0.15)] md:border-[10px] md:border-slate-900 transition-all duration-300"
+        className="w-full max-w-[430px] h-full md:h-[840px] bg-white overflow-hidden relative flex flex-col justify-between md:rounded-[40px] md:shadow-[0_24px_50px_rgba(0,0,0,0.15)] md:border-[10px] md:border-slate-900 transition-all duration-300"
       >
         {/* Outer content container with seamless soft canvas background */}
-        <div className={`flex-1 pt-0 relative min-h-0 bg-[#F4F6FB] flex flex-col ${
+        <div className={`flex-1 pt-0 relative min-h-0 bg-white flex flex-col ${
           activeTab === 'home' || activeTab === 'history' ? 'overflow-hidden' : 'overflow-y-auto'
         }`}>
           
           {/* Header toolbar sitting at global view levels inside a premium sticky wrapper */}
-          <div className="relative z-20 bg-[#F4F6FB] shrink-0">
+          <div className="relative z-20 bg-white shrink-0">
             <Header 
               userEmail={userEmail}
               onOpenNotifications={() => setShowNotifications(true)}
@@ -180,7 +180,7 @@ export default function App() {
             <div className="flex-1 relative min-h-0">
               
               {/* 1. Large Blue Balance card - placed as a static background layer that doesn't scroll */}
-              <div className="absolute top-[8px] left-0 right-0 z-0">
+              <div className="absolute top-[28px] left-0 right-0 z-0">
                 <BalanceCard 
                   balance={balance}
                   hideBalance={hideBalance}
@@ -192,8 +192,8 @@ export default function App() {
               {/* Scrollable Overlayer Area (Uses pointer-events techniques so background QR/eye buttons are still fully clickable through the transparent spacer region) */}
               <div className="absolute inset-0 z-10 overflow-y-auto pointer-events-none pb-2">
                 
-                {/* 142px transparent spacer matching the exact shifted position of the smaller-radius BalanceCard */}
-                <div className="h-[142px] w-full bg-transparent pointer-events-none" />
+                {/* 162px transparent spacer matching the exact shifted position of the smaller-radius BalanceCard */}
+                <div className="h-[162px] w-full bg-transparent pointer-events-none" />
 
                 {/* Overlying solid content tray with a premium round radius top that slides over the Balance Card */}
                 <div className="bg-white rounded-t-[14px] pt-1.5 pb-28 space-y-1 shadow-[0_-12px_24px_rgba(0,0,0,0.02)] border-t border-slate-200/20 pointer-events-auto relative z-10 min-h-[500px]">
@@ -272,12 +272,6 @@ export default function App() {
           onChangeTab={setActiveTab}
           onTriggerScanner={() => setShowScanner(true)}
         />
-
-        {/* 
-          Sleek dark bottom safe bar backing to integrate seamlessly 
-          with Android's 3-button system navigation bar or gesture bar region
-        */}
-        <div className="absolute bottom-0 left-0 right-0 h-3 bg-black z-30 pointer-events-none md:hidden" />
 
         {/* ==========================================
             GLOBAL CONTEXTUAL MODALS CONTROLS

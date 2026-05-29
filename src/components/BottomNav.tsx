@@ -51,14 +51,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         </button>
 
         {/* Tab 3 (Central): Elevated QR Scan button sitting exactly as in image screenshot */}
-        <div className="flex-1 flex justify-center -mt-6.5 relative select-none">
+        <div className="flex-1 flex justify-center -mt-[28px] relative select-none">
           <button
             onClick={onTriggerScanner}
             id="center-qr-scanner-btn"
-            className="w-13 h-13 bg-[#1479FF] hover:bg-blue-600 hover:scale-105 active:scale-95 text-white rounded-full flex items-center justify-center shadow-lg shadow-[#1479FF]/30 transition-all border-4 border-white cursor-pointer"
+            className="w-[59px] h-[59px] bg-[#1479FF] hover:bg-blue-600 hover:scale-105 active:scale-95 text-white rounded-full flex items-center justify-center shadow-lg shadow-[#1479FF]/30 transition-all cursor-pointer"
           >
             {/* Square framing brackets representing camera viewfinder targeting scan */}
-            <svg viewBox="0 0 100 100" className="w-5.5 h-5.5 fill-none stroke-current stroke-[7]">
+            <svg viewBox="0 0 100 100" className="w-[29px] h-[29px] fill-none stroke-current stroke-[7]">
               <path d="M15 35V15H35" strokeLinecap="round" />
               <path d="M65 15H85V35" strokeLinecap="round" />
               <path d="M85 65V85H65" strokeLinecap="round" />
