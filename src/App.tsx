@@ -149,7 +149,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-screen bg-white md:bg-slate-100 flex items-center justify-center font-sans antialiased text-slate-800 overflow-hidden relative">
+    <div className="h-screen w-screen bg-[#F4F6FB] md:bg-slate-100 flex items-center justify-center font-sans antialiased text-slate-800 overflow-hidden relative">
       
       {/* 
         PREMIUM RESPONSIVE VIEWPORT CARD WRAPPER
@@ -157,7 +157,7 @@ export default function App() {
       */}
       <div 
         id="phone-device-wrapper"
-        className="w-full max-w-[430px] h-full md:h-[840px] bg-white overflow-hidden relative flex flex-col justify-between md:rounded-[40px] md:shadow-[0_24px_50px_rgba(0,0,0,0.15)] md:border-[10px] md:border-slate-900 transition-all duration-300"
+        className="w-full max-w-[430px] h-full md:h-[840px] bg-[#F4F6FB] overflow-hidden relative flex flex-col justify-between md:rounded-[40px] md:shadow-[0_24px_50px_rgba(0,0,0,0.15)] md:border-[10px] md:border-slate-900 transition-all duration-300"
       >
         {/* Outer content container with seamless soft canvas background */}
         <div className={`flex-1 pt-0 relative min-h-0 bg-[#F4F6FB] flex flex-col ${
