@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { DCLogo } from './Icons';
+import { DCLogo, AlifLogo, AnorLogo } from './Icons';
 import { QuickTransferShort } from '../types';
 
 interface QuickTransferProps {
@@ -15,41 +15,54 @@ export const QuickTransfer: React.FC<QuickTransferProps> = ({
   onSelectShortcut,
 }) => {
   return (
-    <div className="px-5 py-1 select-none">
+    <div className="px-5 py-0.5 select-none">
       {/* Horizontal Flex Scroll Container */}
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-        {shortcuts.map((shortcut) => (
-          <div
-            key={shortcut.id}
-            id={`shortcut-${shortcut.id}`}
-            className="relative flex flex-col items-center justify-center w-[96px] min-w-[90px] h-[76px] bg-white border border-slate-100 hover:border-slate-200 hover:bg-slate-50 rounded-[14px] p-1.5 text-center transition-all cursor-pointer shadow-xs active:scale-95 duration-200"
-            onClick={() => onSelectShortcut(shortcut.type)}
-          >
-            {/* Round avatar containing DC custom brand logo */}
-            <div className="w-7 h-7 rounded-full bg-[#f1f5f9] flex items-center justify-center mb-1 shrink-0">
-              <DCLogo className="w-5 h-5" />
+      <div className="flex gap-4 overflow-x-auto pb-1.5 scrollbar-none">
+        {shortcuts.map((shortcut) => {
+          const isPhone = shortcut.id === 'phone' || shortcut.id === 'alif';
+          const typeToSelect = shortcut.type;
+
+          return (
+            <div
+              key={shortcut.id}
+              id={`shortcut-${shortcut.id}`}
+              className="relative flex flex-col items-center justify-center bg-white border border-slate-100/90 hover:border-slate-200/95 hover:bg-slate-50/50 rounded-[12px] text-center transition-all cursor-pointer shadow-md hover:shadow-lg active:scale-95 duration-200 w-[72px] min-w-[72px] h-[66px] p-1"
+              onClick={() => onSelectShortcut(typeToSelect)}
+            >
+              {/* Logo representation corresponding to each brand */}
+              <div className="w-[30px] h-[30px] flex items-center justify-center mb-0.5 shrink-0">
+                {shortcut.brand === 'alif' ? (
+                  <AlifLogo className="w-[30px] h-[30px]" />
+                ) : shortcut.brand === 'anor' ? (
+                  <AnorLogo className="w-[30px] h-[30px]" />
+                ) : (
+                  <div className="w-[30px] h-[30px] rounded-full bg-[#f1f5f9] flex items-center justify-center">
+                    <DCLogo className="w-[21px] h-[21px]" />
+                  </div>
+                )}
+              </div>
+
+              {/* Title / Caption label matched perfectly to screenshot */}
+              <span className="text-[7.2px] leading-[1.1] font-semibold text-slate-800 tracking-tight shrink-0 text-center whitespace-pre-line flex-1 flex items-center justify-center w-full">
+                {shortcut.title}
+              </span>
+
+              {/* Cross 'X' dismiss badge for custom brand shortcuts exactly as shown inside the picture */}
+              {shortcut.canDismiss && (
+                <button
+                  id={`btn-remove-shortcut-${shortcut.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent triggering the click on main body
+                    onRemoveShortcut(shortcut.id);
+                  }}
+                  className="absolute top-1.5 right-1.5 p-0.5 text-slate-400 hover:text-red-500 rounded-full transition-all active:scale-90"
+                >
+                  <X size={9} className="stroke-[2.2]" />
+                </button>
+              )}
             </div>
-
-            {/* Title / Caption label matched perfectly to screenshot */}
-            <span className="text-[8.5px] font-extrabold text-[#0D2440] leading-tight tracking-[0.01em] shrink-0">
-              {shortcut.title}
-            </span>
-
-            {/* Cross 'X' dismiss badge for the card shortcut exactly as shown */}
-            {shortcut.type === 'card' && (
-              <button
-                id="btn-remove-card-shortcut"
-                onClick={(e) => {
-                  e.stopPropagation(); // prevent triggering the click on main body
-                  onRemoveShortcut(shortcut.id);
-                }}
-                className="absolute top-1 right-1 p-0.5 bg-slate-100 hover:bg-slate-200 hover:text-red-500 rounded-full text-slate-400 transition-all active:scale-90"
-              >
-                <X size={8} className="stroke-[2.5]" />
-              </button>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

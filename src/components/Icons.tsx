@@ -132,3 +132,75 @@ export const CreditCardIllustration: React.FC<{ className?: string }> = ({ class
     </svg>
   );
 };
+
+// Alif Mobi Logo with high-fidelity path details matching screenshot
+export const AlifLogo: React.FC<{ className?: string }> = ({ className = 'w-10 h-10' }) => {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <circle cx="50" cy="50" r="46" fill="#10B981" />
+      {/* Dynamic crescent/A curve */}
+      <path 
+        d="M50 25C36 25 25 36 25 50C25 64 36 75 50 75C59.5 75 67.5 69.5 71.5 61.5" 
+        stroke="white" 
+        strokeWidth="7.5" 
+        strokeLinecap="round" 
+      />
+      {/* Alif arrow stem inside */}
+      <path 
+        d="M50 48V75" 
+        stroke="white" 
+        strokeWidth="7.5" 
+        strokeLinecap="round" 
+      />
+      <path 
+        d="M50 48L65 33" 
+        stroke="white" 
+        strokeWidth="7.5" 
+        strokeLinecap="round" 
+      />
+    </svg>
+  );
+};
+
+// Anor Pomegranate Logo with high-fidelity path details matching screenshot
+export const AnorLogo: React.FC<{ className?: string }> = ({ className = 'w-10 h-10' }) => {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      {/* White circle card base */}
+      <circle cx="50" cy="50" r="46" fill="white" />
+      {/* Blue border ring */}
+      <circle cx="50" cy="50" r="42" stroke="#0056C6" strokeWidth="2.5" />
+      
+      {/* Pomegranate body path */}
+      <path 
+        d="M50 28C39 29 34 38 34 49C34 61 41.5 69 50 69C58.5 69 66 61 66 49C66 38 61 29 50 28Z" 
+        fill="#0056C6" 
+      />
+      
+      {/* Crown elements on top of pomegranate */}
+      <path 
+        d="M44 28 L40 21 L47 25 Z" 
+        fill="#0056C6" 
+      />
+      <path 
+        d="M50 28 L50 19 L54 26 Z" 
+        fill="#0056C6" 
+      />
+      <path 
+        d="M56 28 L60 21 L53 25 Z" 
+        fill="#0056C6" 
+      />
+      
+      {/* Inside elegant loop structure representing pomegranate seeds and letter A */}
+      <path 
+        d="M50 62C46.5 58.5 43.5 53.5 44 48C44.5 42.5 49 40.5 50 45C51 40.5 55.5 42.5 56 48C56.5 53.5 53.5 58.5 50 62Z" 
+        fill="white" 
+      />
+      
+      {/* Central loop node connections */}
+      <circle cx="50" cy="49" r="2.5" fill="#0056C6" />
+      <circle cx="47" cy="54" r="2" fill="#0056C6" />
+      <circle cx="53" cy="54" r="2" fill="#0056C6" />
+    </svg>
+  );
+};

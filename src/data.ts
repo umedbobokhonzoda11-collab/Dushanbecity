@@ -4,14 +4,34 @@ export const INITIAL_SHORTCUTS: QuickTransferShort[] = [
   {
     id: 'phone',
     type: 'phone',
-    title: 'DC (по номеру телефона)',
-    caption: 'DC (по номеру телефона)'
+    title: 'DC (по номеру\nтелефона)',
+    caption: 'DC (по номеру телефона)',
+    brand: 'dc',
+    canDismiss: false
+  },
+  {
+    id: 'alif',
+    type: 'phone',
+    title: '«Алиф Банк»,\nalif mobi',
+    caption: '«Алиф Банк», alif mobi',
+    brand: 'alif',
+    canDismiss: true
+  },
+  {
+    id: 'anor',
+    type: 'card',
+    title: 'Анор',
+    caption: 'Анор',
+    brand: 'anor',
+    canDismiss: true
   },
   {
     id: 'card',
     type: 'card',
-    title: 'DC (по номеру карты)',
-    caption: 'DC (по номеру карты)'
+    title: 'DC (по номеру\nкарты)',
+    caption: 'DC (по номеру карты)',
+    brand: 'dc',
+    canDismiss: false
   }
 ];
 

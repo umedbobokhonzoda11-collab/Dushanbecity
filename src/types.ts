@@ -3,6 +3,8 @@ export interface QuickTransferShort {
   type: 'phone' | 'card';
   title: string;
   caption: string;
+  brand?: 'dc' | 'alif' | 'anor';
+  canDismiss?: boolean;
 }
 
 export interface Partner {

@@ -38,7 +38,7 @@ export default function App() {
   });
 
   const [shortcuts, setShortcuts] = useState<QuickTransferShort[]>(() => {
-    const saved = localStorage.getItem('dc_shortcuts');
+    const saved = localStorage.getItem('dc_shortcuts_v3');
     return saved ? JSON.parse(saved) : INITIAL_SHORTCUTS;
   });
 
@@ -67,7 +67,7 @@ export default function App() {
   }, [hideBalance]);
 
   useEffect(() => {
-    localStorage.setItem('dc_shortcuts', JSON.stringify(shortcuts));
+    localStorage.setItem('dc_shortcuts_v3', JSON.stringify(shortcuts));
   }, [shortcuts]);
 
   useEffect(() => {
@@ -196,7 +196,7 @@ export default function App() {
                 <div className="h-[142px] w-full bg-transparent pointer-events-none" />
 
                 {/* Overlying solid content tray with a premium round radius top that slides over the Balance Card */}
-                <div className="bg-white rounded-t-[14px] pt-4 pb-28 space-y-4 shadow-[0_-12px_24px_rgba(0,0,0,0.02)] border-t border-slate-200/20 pointer-events-auto relative z-10 min-h-[500px]">
+                <div className="bg-white rounded-t-[14px] pt-1.5 pb-28 space-y-1 shadow-[0_-12px_24px_rgba(0,0,0,0.02)] border-t border-slate-200/20 pointer-events-auto relative z-10 min-h-[500px]">
                   
                   {/* 2. Quick Transfer shortcuts */}
                   <QuickTransfer 

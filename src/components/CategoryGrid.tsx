@@ -35,10 +35,10 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
   const [electricityPaid, setElectricityPaid] = useState(false);
 
   return (
-    <div className="px-5 py-2 select-none">
+    <div className="px-5 py-0.5 select-none">
       
       {/* HIGH FIDELITY 8-CARD GRID CORRESPONDING EXACTLY TO TELEGRAM SCREENSHOT */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         
         {/* CARD 1: Оплата услуг (Spans 2 columns) */}
         <div 
@@ -56,7 +56,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Precise High-Fidelity blue pouch icon representation aligned at bottom right */}
-          <div className="absolute bottom-2.5 right-3.5 pointer-events-none select-none">
+          <div className="absolute bottom-2.5 right-3.5 pointer-events-none select-none origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <div className="relative w-[50px] h-[38px] flex items-center justify-center">
               {/* Back flap */}
               <div className="absolute bottom-0 right-[4px] w-[38px] h-[30px] bg-[#93C5FD] rounded-[10px]" />
@@ -83,7 +83,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Precise yellow card icon representation aligned at bottom right */}
-          <div className="absolute bottom-3 right-3 pointer-events-none select-none">
+          <div className="absolute bottom-3 right-3 pointer-events-none select-none origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <div className="w-[38px] h-[26px] bg-[#FACC15] rounded-[6px] relative overflow-hidden flex flex-col justify-between p-1 shadow-xs border border-[#EAB308]/20">
               <div className="w-full h-[3.5px] bg-[#EAB308] rounded-xs mt-0.5" />
               <div className="flex gap-0.5 mt-2">
@@ -106,7 +106,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Pink check-purse icon aligned at bottom right */}
-          <div className="absolute bottom-2.5 right-3 pointer-events-none select-none">
+          <div className="absolute bottom-2.5 right-3 pointer-events-none select-none origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <div className="relative w-[38px] h-[34px] flex items-center justify-center">
               {/* Silver/pink buckle */}
               <div className="w-4 h-3.5 border-t-[2.5px] border-x-[2.5px] border-[#DB2777] rounded-t-full absolute top-[1px]" />
@@ -132,7 +132,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Green folders with I+I aligned at bottom right */}
-          <div className="absolute bottom-2.5 right-3 pointer-events-none select-none">
+          <div className="absolute bottom-2.5 right-3 pointer-events-none select-none origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <div className="relative w-[36px] h-[32px] flex items-center justify-center">
               {/* Back folder */}
               <div className="absolute bottom-0 right-0 w-[28px] h-[25px] bg-[#15803D] rounded-[7px] rotate-[8deg]" />
@@ -158,7 +158,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Solid blue house icon aligned at bottom right */}
-          <div className="absolute bottom-3 right-3 pointer-events-none select-none text-[#1479FF]">
+          <div className="absolute bottom-3 right-3 pointer-events-none select-none text-[#1479FF] origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-[30px] h-[30px]">
               <path d="M19 21H15V15H9V21H5V10L12 3L19 10V21Z" />
             </svg>
@@ -178,7 +178,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Gray files capsule indicator at bottom right */}
-          <div className="absolute bottom-3 right-3 pointer-events-none select-none">
+          <div className="absolute bottom-3 right-3 pointer-events-none select-none origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <div className="w-[34px] h-[25px] bg-[#94A3B8] rounded-[6px] relative overflow-hidden flex flex-col justify-end p-1 gap-0.5 shadow-2xs">
               <div className="w-[18px] h-[2px] bg-[#475569] rounded-full mx-auto" />
               <div className="w-[18px] h-[2px] bg-[#475569] rounded-full mx-auto" />
@@ -198,7 +198,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Beautiful high quality CityCard monogram SVG logo bottom right */}
-          <div className="absolute bottom-2.5 right-1.5 pointer-events-none select-none">
+          <div className="absolute bottom-2.5 right-1.5 pointer-events-none select-none origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <div className="flex items-center gap-0.5">
               {/* Outer logo circle */}
               <div className="w-[26px] h-[26px] rounded-full border-[1.8px] border-[#1479FF] flex items-center justify-center relative shrink-0">
@@ -229,7 +229,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </div>
 
           {/* Gray folder / newsletter page with a tiny blue ribbon tag aligned bottom right */}
-          <div className="absolute bottom-2.5 right-3.5 pointer-events-none select-none">
+          <div className="absolute bottom-2.5 right-3.5 pointer-events-none select-none origin-bottom-right" style={{ transform: 'scale(1.4)' }}>
             <div className="relative w-[30px] h-[34px] bg-[#CBD5E1] rounded-[5px] flex flex-col justify-end p-1 shadow-2xs border border-slate-300/30">
               {/* Bookmark hanger blue decoration */}
               <div className="absolute top-0 right-1 w-[8px] h-4 bg-[#1479FF] rounded-b-[2px]" />

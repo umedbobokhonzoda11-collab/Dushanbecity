@@ -16,7 +16,7 @@ export const Partners: React.FC<PartnersProps> = ({
   const [activePartnerApp, setActivePartnerApp] = useState<'neru' | 'parking' | 'shohin' | null>(null);
 
   return (
-    <div className="px-5 py-1 select-none">
+    <div className="px-5 py-0.5 select-none">
       {/* Container holding partner bar exactly as shown inside the picture - height reduced further by 20% */}
       <div className="bg-white border border-slate-100 rounded-[14px] py-2 px-3 flex items-center justify-around shadow-xs">
         

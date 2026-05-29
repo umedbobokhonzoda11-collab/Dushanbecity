@@ -64,10 +64,10 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
         <div className="flex items-center justify-between w-full">
           <div className="flex items-baseline gap-1.5">
             {/* Balance Text */}
-            <h2 className="text-[34px] font-bold tracking-tight leading-none">
+            <h2 className="text-[30.6px] font-bold tracking-tight leading-none">
               {hideBalance ? '••••••' : balance.toFixed(2)}
             </h2>
-            <span className="text-[15.5px] font-extrabold text-white/95 leading-none">TJS</span>
+            <span className="text-[13.95px] font-extrabold text-white/95 leading-none">TJS</span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -100,7 +100,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
 
         {/* Bottom half: Last transaction timestamp exactly matching layout */}
         <div className="mt-4">
-          <p className="text-[10.4px] font-mono tracking-wider text-white/70 antialiased">
+          <p className="text-[9.36px] font-mono tracking-wider text-white/70 antialiased">
             {lastRefreshedDate}
           </p>
         </div>

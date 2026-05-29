@@ -45,7 +45,7 @@ export const Banners: React.FC<BannersProps> = ({
   };
 
   return (
-    <div className="px-5 py-1.5 select-none">
+    <div className="px-5 py-0.5 select-none">
       {/* Scrollable Container with horizontal friction and snaps */}
       <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1">
         
