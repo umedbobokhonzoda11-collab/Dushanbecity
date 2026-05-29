@@ -15,7 +15,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
   onRefreshBalance,
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastRefreshedDate, setLastRefreshedDate] = useState('22.05.26 - 21:48:05');
+  const [lastRefreshedDate, setLastRefreshedDate] = useState('28.05.26 - 23:05:08');
   const [showQrModal, setShowQrModal] = useState(false);
   const [copiedNotification, setCopiedNotification] = useState(false);
 
@@ -51,34 +51,36 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
   };
 
   return (
-    <div className="pl-5 pr-2 py-1.5 select-none flex items-stretch gap-1.5">
+    <div className="px-5 py-1.5 select-none flex items-stretch gap-1.5">
       {/* Primary Balance Display Card */}
       <div 
         id="balance-container"
-        className="flex-1 bg-[#1479FF] text-white rounded-[21px] py-[18px] px-6 shadow-md shadow-[#1479FF]/15 flex flex-col justify-between relative overflow-hidden"
+        className="flex-1 bg-[#1479FF] text-white rounded-[14px] py-[18px] px-6 shadow-md shadow-[#1479FF]/15 flex flex-col justify-between relative overflow-hidden"
       >
         {/* Subtle decorative vector backdrop glow */}
         <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
-        {/* Top half: Money status and toggles */}
-        <div>
-          <div className="flex items-center gap-3">
+        {/* Top half: Money status and toggles in dual separate alignment */}
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-baseline gap-1.5">
             {/* Balance Text */}
-            <h2 className="text-[27px] font-bold tracking-tight leading-none">
+            <h2 className="text-[34px] font-bold tracking-tight leading-none">
               {hideBalance ? '••••••' : balance.toFixed(2)}
             </h2>
-            <span className="text-[14.4px] font-bold text-white/90 leading-none pt-2">TJS</span>
+            <span className="text-[15.5px] font-extrabold text-white/95 leading-none">TJS</span>
+          </div>
 
+          <div className="flex items-center gap-3">
             {/* Visibility Indicator Toggle */}
             <button
               id="balance-visibility-btn"
               onClick={onToggleHideBalance}
-              className="ml-2 hover:opacity-80 active:scale-90 transition-all cursor-pointer p-1"
+              className="hover:opacity-80 active:scale-90 transition-all cursor-pointer p-1"
             >
               {hideBalance ? (
-                <EyeOff size={22} className="stroke-[2.2] text-white/80" />
+                <EyeOff size={23} className="stroke-[2.2] text-white/80" />
               ) : (
-                <Eye size={22} className="stroke-[2.2] opacity-95" />
+                <Eye size={23} className="stroke-[2.2] text-white" />
               )}
             </button>
 
@@ -89,8 +91,8 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
               className="hover:opacity-80 active:scale-90 transition-all cursor-pointer p-1"
             >
               <RotateCw 
-                size={20} 
-                className={`stroke-[2.5] transition-transform duration-500 ${isRefreshing ? 'animate-spin' : ''}`} 
+                size={21} 
+                className={`stroke-[2.4] text-white transition-transform duration-500 ${isRefreshing ? 'animate-spin' : ''}`} 
               />
             </button>
           </div>
@@ -107,15 +109,25 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
       {/* Auxiliary Grid shortcut white box on the right */}
       <div 
         onClick={() => setShowQrModal(true)}
-        className="w-[58px] bg-white border border-slate-100 hover:border-slate-200 active:scale-95 transition-all text-[#1479FF] rounded-[21px] flex items-center justify-center cursor-pointer shadow-xs"
+        className="w-[58px] bg-white border border-slate-100/40 hover:bg-slate-50/50 active:scale-95 transition-all text-[#1479FF] rounded-[14px] flex items-center justify-center cursor-pointer shadow-xs"
       >
-        <div id="quick-widget-trigger" className="flex flex-col items-center">
-          <div className="grid grid-cols-2 gap-1 p-1 bg-[#f1f5f9] rounded-xl text-[#1479FF]">
-            <div className="w-2.5 h-2.5 rounded-[2px] border-2 border-[#1479FF]" />
-            <div className="w-2.5 h-2.5 rounded-[2px] bg-[#1479FF]" />
-            <div className="w-2.5 h-2.5 rounded-[2px] bg-[#1479FF]" />
-            <div className="w-2.5 h-2.5 rounded-[2px] border-2 border-[#1479FF]" />
-          </div>
+        <div id="quick-widget-trigger" className="flex items-center justify-center">
+          <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-[#1479FF]">
+            {/* Top-Left Outline block */}
+            <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="2.5" />
+            
+            {/* Bottom-Left Outline block */}
+            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="2.5" />
+            
+            {/* Top-Right Outline block */}
+            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="2.5" />
+            
+            {/* Bottom-Right custom QR block resembling tiny digital dots exactly */}
+            <rect x="14" y="14" width="3" height="3" rx="0.5" fill="currentColor" />
+            <rect x="18" y="18" width="3" height="3" rx="0.5" fill="currentColor" />
+            <rect x="18" y="14" width="2" height="2" rx="0.5" fill="currentColor" className="opacity-60" />
+            <rect x="14" y="18" width="2" height="2" rx="0.5" fill="currentColor" className="opacity-60" />
+          </svg>
         </div>
       </div>
 

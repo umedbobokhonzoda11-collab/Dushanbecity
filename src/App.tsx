@@ -29,9 +29,8 @@ export default function App() {
 
   // Persistence management states
   const [balance, setBalance] = useState<number>(() => {
-    const saved = localStorage.getItem('dc_balance');
-    const parsed = saved ? parseFloat(saved) : 3337.64;
-    return parsed < 3337.64 ? 3337.64 : parsed;
+    const saved = localStorage.getItem('dc_balance_v2');
+    return saved ? parseFloat(saved) : 1450.61;
   });
 
   const [hideBalance, setHideBalance] = useState<boolean>(() => {
@@ -60,7 +59,7 @@ export default function App() {
 
   // Sync state mutations inside browser local caching
   useEffect(() => {
-    localStorage.setItem('dc_balance', balance.toString());
+    localStorage.setItem('dc_balance_v2', balance.toString());
   }, [balance]);
 
   useEffect(() => {
@@ -160,59 +159,75 @@ export default function App() {
         id="phone-device-wrapper"
         className="w-full max-w-[430px] h-full md:h-[840px] bg-white overflow-hidden relative flex flex-col justify-between md:rounded-[40px] md:shadow-[0_24px_50px_rgba(0,0,0,0.15)] md:border-[10px] md:border-slate-900 transition-all duration-300"
       >
-        {/* Outer content container with clean white background */}
-        <div className={`flex-1 pt-0 relative min-h-0 bg-white flex flex-col ${
-          activeTab === 'history' ? 'overflow-hidden' : 'overflow-y-auto'
+        {/* Outer content container with seamless soft canvas background */}
+        <div className={`flex-1 pt-0 relative min-h-0 bg-[#F4F6FB] flex flex-col ${
+          activeTab === 'home' || activeTab === 'history' ? 'overflow-hidden' : 'overflow-y-auto'
         }`}>
           
-          {/* Header toolbar sitting at global view levels */}
-          <Header 
-            userEmail={userEmail}
-            onOpenNotifications={() => setShowNotifications(true)}
-            onOpenSupport={() => setShowSupport(true)}
-            onOpenSearch={() => setShowSearch(true)}
-            activeTab={activeTab}
-          />
+          {/* Header toolbar sitting at global view levels inside a premium sticky wrapper */}
+          <div className="relative z-20 bg-[#F4F6FB] shrink-0">
+            <Header 
+              userEmail={userEmail}
+              onOpenNotifications={() => setShowNotifications(true)}
+              onOpenSupport={() => setShowSupport(true)}
+              onOpenSearch={() => setShowSearch(true)}
+              activeTab={activeTab}
+            />
+          </div>
 
           {/* DYNAMIC TAB MANAGER RENDERER */}
           {activeTab === 'home' && (
-            <div className="space-y-1 animate-scale-up pb-28">
+            <div className="flex-1 relative min-h-0">
               
-              {/* 1. Large Blue Balance card exactly matching the template */}
-              <BalanceCard 
-                balance={balance}
-                hideBalance={hideBalance}
-                onToggleHideBalance={handleToggleHideBalance}
-                onRefreshBalance={handleRefreshBalance}
-              />
+              {/* 1. Large Blue Balance card - placed as a static background layer that doesn't scroll */}
+              <div className="absolute top-[8px] left-0 right-0 z-0">
+                <BalanceCard 
+                  balance={balance}
+                  hideBalance={hideBalance}
+                  onToggleHideBalance={handleToggleHideBalance}
+                  onRefreshBalance={handleRefreshBalance}
+                />
+              </div>
 
-              {/* 2. Quick Transfer shortcuts */}
-              <QuickTransfer 
-                shortcuts={shortcuts}
-                onRemoveShortcut={handleRemoveShortcut}
-                onSelectShortcut={handleSelectShortcut}
-              />
+              {/* Scrollable Overlayer Area (Uses pointer-events techniques so background QR/eye buttons are still fully clickable through the transparent spacer region) */}
+              <div className="absolute inset-0 z-10 overflow-y-auto pointer-events-none pb-2">
+                
+                {/* 142px transparent spacer matching the exact shifted position of the smaller-radius BalanceCard */}
+                <div className="h-[142px] w-full bg-transparent pointer-events-none" />
 
-              {/* 3. Sliding promotional banner carousel (Avia booking engine) */}
-              <Banners 
-                balance={balance}
-                onDeductBalance={handleDeductBalance}
-                onAddTransaction={handleAddTransaction}
-              />
+                {/* Overlying solid content tray with a premium round radius top that slides over the Balance Card */}
+                <div className="bg-white rounded-t-[14px] pt-4 pb-28 space-y-4 shadow-[0_-12px_24px_rgba(0,0,0,0.02)] border-t border-slate-200/20 pointer-events-auto relative z-10 min-h-[500px]">
+                  
+                  {/* 2. Quick Transfer shortcuts */}
+                  <QuickTransfer 
+                    shortcuts={shortcuts}
+                    onRemoveShortcut={handleRemoveShortcut}
+                    onSelectShortcut={handleSelectShortcut}
+                  />
 
-              {/* 4. Active partners widget bar (Neru charging system, Parkings maps booking, Shohin products) */}
-              <Partners 
-                balance={balance}
-                onDeductBalance={handleDeductBalance}
-                onAddTransaction={handleAddTransaction}
-              />
+                  {/* 3. Sliding promotional banner carousel (Avia booking engine) */}
+                  <Banners 
+                    balance={balance}
+                    onDeductBalance={handleDeductBalance}
+                    onAddTransaction={handleAddTransaction}
+                  />
 
-              {/* 5. Main dashboard grid (Mobile recharge cards, deposits calculators) */}
-              <CategoryGrid 
-                balance={balance}
-                onDeductBalance={handleDeductBalance}
-                onAddTransaction={handleAddTransaction}
-              />
+                  {/* 4. Active partners widget bar (Neru charging system, Parkings maps booking, Shohin products) */}
+                  <Partners 
+                    balance={balance}
+                    onDeductBalance={handleDeductBalance}
+                    onAddTransaction={handleAddTransaction}
+                  />
+
+                  {/* 5. Main dashboard grid (Mobile recharge cards, deposits calculators) */}
+                  <CategoryGrid 
+                    balance={balance}
+                    onDeductBalance={handleDeductBalance}
+                    onAddTransaction={handleAddTransaction}
+                  />
+
+                </div>
+              </div>
 
             </div>
           )}

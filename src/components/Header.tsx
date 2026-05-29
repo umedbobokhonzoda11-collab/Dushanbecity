@@ -24,16 +24,16 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="flex items-center justify-between px-5 pt-4 pb-2 bg-white select-none">
+      <header className="flex items-center justify-between px-5 pt-6 pb-2 bg-transparent select-none">
         {/* Hamburger Menu Trigger */}
         <button
           id="btn-hamburger"
           onClick={() => setIsSidebarOpen(true)}
           className="flex flex-col justify-between w-5 h-4 cursor-pointer group focus:outline-none transition-transform active:scale-90"
         >
-          <span className="w-5 h-[2.5px] bg-[#1861D5] rounded-full transition-transform"></span>
-          <span className="w-3.5 h-[2.5px] bg-[#1861D5] rounded-full self-start transition-all group-hover:w-5"></span>
-          <span className="w-4 h-[2.5px] bg-[#1861D5] rounded-full self-start transition-all group-hover:w-5"></span>
+          <span className="w-5 h-[2.5px] bg-[#1479FF] rounded-full transition-transform"></span>
+          <span className="w-3.5 h-[2.5px] bg-[#1479FF] rounded-full self-start transition-all group-hover:w-5"></span>
+          <span className="w-4 h-[2.5px] bg-[#1479FF] rounded-full self-start transition-all group-hover:w-5"></span>
         </button>
 
         {/* Action Controls */}
@@ -43,10 +43,10 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="btn-notif"
               onClick={onOpenNotifications}
-              className="text-slate-600 hover:text-[#1861D5] active:scale-95 transition-all relative"
+              className="text-[#1479FF] hover:opacity-80 active:scale-95 transition-all relative"
             >
-              <Bell size={19} className="stroke-[1.8]" />
-              <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-red-500 rounded-full" />
+              <Bell size={21} className="stroke-[2.2]" />
+              <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
             </button>
           )}
 
@@ -55,9 +55,9 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="btn-support"
               onClick={onOpenSupport}
-              className="text-slate-600 hover:text-[#1861D5] active:scale-95 transition-all"
+              className="text-[#1479FF] hover:opacity-80 active:scale-95 transition-all"
             >
-              <Headphones size={19} className="stroke-[1.8]" />
+              <Headphones size={21} className="stroke-[2.2]" />
             </button>
           )}
 
@@ -66,9 +66,9 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="btn-search"
               onClick={onOpenSearch}
-              className="text-[#1861D5] hover:opacity-80 active:scale-95 transition-all animate-fade-in"
+              className="text-[#1479FF] hover:opacity-80 active:scale-95 transition-all animate-fade-in"
             >
-              <Search size={19} className="stroke-[2.2]" />
+              <Search size={21} className="stroke-[2.5]" />
             </button>
           )}
         </div>
