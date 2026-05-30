@@ -22,6 +22,7 @@ export interface Transaction {
   date: string;
   type: 'payment' | 'transfer_in' | 'transfer_out' | 'refund';
   category?: string;
+  receiver?: string;
 }
 
 export type ActiveTab = 'home' | 'transfers' | 'miniapps' | 'history';

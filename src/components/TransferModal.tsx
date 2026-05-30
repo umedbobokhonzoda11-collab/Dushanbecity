@@ -6,7 +6,8 @@ interface TransferModalProps {
   balance: number;
   onClose: () => void;
   onTransferComplete: (recipientName: string, amount: number) => void;
-  onAddTransaction: (title: string, amount: number, category: string) => void;
+  onAddTransaction: (title: string, amount: number, category: string, receiver?: string) => void;
+  onGoHome?: () => void;
 }
 
 export const TransferModal: React.FC<TransferModalProps> = ({
@@ -15,6 +16,7 @@ export const TransferModal: React.FC<TransferModalProps> = ({
   onClose,
   onTransferComplete,
   onAddTransaction,
+  onGoHome,
 }) => {
   const [phone, setPhone] = useState('');
   const [card, setCard] = useState('');
@@ -86,17 +88,21 @@ export const TransferModal: React.FC<TransferModalProps> = ({
     const rec = recipient || getSimulatedRecipient();
 
     // Create operation
-    const prefix = phone.startsWith('992') ? '' : '992';
+    const cleanPhone = phone.replace(/^992/, '');
     const txTitle = type === 'phone' 
-      ? `${prefix}${phone}`
-      : `Интиқол ба корт **** ${card.slice(-4)}`;
+      ? 'DC (по номеру телефона)' 
+      : 'DC (по номеру карты)';
+    
+    const receiverVal = type === 'phone'
+      ? `+992 ${cleanPhone}`
+      : card.replace(/\s+/g, '').replace(/(\d{4})\d*(\d{4})$/, '$1 **** **** $2') || card;
 
     setIsSuccessCompleted(false);
     setStatus('success');
 
     setTimeout(() => {
       onTransferComplete(rec, val);
-      onAddTransaction(txTitle, -val, 'Переводы');
+      onAddTransaction(txTitle, -val, 'Переводы', receiverVal);
       setIsSuccessCompleted(true);
     }, 500);
   };
@@ -347,11 +353,6 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                       <span className="text-slate-800 font-extrabold font-mono text-right">{Number(sumStr || 0).toFixed(2)} TJS</span>
                     </div>
 
-                    <div className="flex items-center justify-between text-[13px] leading-tight font-sans pt-1 border-t border-slate-200/10">
-                      <span className="text-[#8B9DAE] font-medium">Комиссия:</span>
-                      <span className="text-slate-800 font-extrabold font-mono text-right">0.00 TJS</span>
-                    </div>
-
                     <div className="flex items-center justify-between text-[13px] leading-tight font-sans pt-2 border-t border-slate-200/50">
                       <span className="text-[#8B9DAE] font-bold">Сумма списания:</span>
                       <span className="text-slate-800 font-extrabold font-mono text-right text-[13.5px]">
@@ -437,11 +438,6 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   </div>
 
                   <div className="flex items-center justify-between pt-1 border-t border-slate-200/5">
-                    <span className="text-[#8B9DAE] font-medium">Комиссия:</span>
-                    <span className="text-slate-800 font-extrabold font-mono text-right">0.00</span>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-1 border-t border-slate-200/5">
                     <span className="text-[#8B9DAE] font-medium">Дата:</span>
                     <span className="text-slate-800 font-extrabold font-mono text-right">
                       {getFormattedDateTime().date}
@@ -462,7 +458,13 @@ export const TransferModal: React.FC<TransferModalProps> = ({
                   <button
                     type="button"
                     disabled={!isSuccessCompleted}
-                    onClick={onClose}
+                    onClick={() => {
+                      if (onGoHome) {
+                        onGoHome();
+                      } else {
+                        onClose();
+                      }
+                    }}
                     className="w-full bg-[#1479FF] hover:bg-[#0c66db] text-white font-extrabold py-4 rounded-[20px] text-[16.5px] tracking-wide transition-all text-center select-none shadow-md shadow-blue-500/10 duration-200 font-sans cursor-pointer active:scale-[0.98]"
                   >
                     На главную

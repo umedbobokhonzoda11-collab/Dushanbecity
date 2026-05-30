@@ -25,7 +25,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
   const [cardLimit, setCardLimit] = useState(5000);
 
   // Credit Tool States
-  const [borrowSum, setBorrowSum] = useState(1500);
+  const [borrowSum, setBorrowSum] = useState(1000);
   const [months, setMonths] = useState(6);
   const [creditRequested, setCreditRequested] = useState(false);
 
@@ -259,9 +259,11 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
         <MobilePaymentModal 
           balance={balance} 
           onClose={() => setActiveModal(null)} 
+          onGoHome={() => setActiveModal(null)}
           onPay={(providerName, phone, amount) => {
             onDeductBalance(amount);
-            onAddTransaction(`${providerName} Пополнение (+992 ${phone})`, -amount, 'Мобильная связь');
+            const cleanPhone = phone.startsWith('+') ? phone : (phone.startsWith('992') ? `+${phone}` : `+992 ${phone}`);
+            onAddTransaction(providerName, -amount, 'Мобильная связь', cleanPhone);
           }}
         />
       )}
@@ -355,7 +357,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                 <span className="text-4xl animate-bounce inline-block">🎉</span>
                 <h4 className="font-bold text-emerald-600 mt-2 mb-1 text-sm">Дархост қабул гардид!</h4>
                 <p className="text-xs text-slate-500 px-3 max-w-xs leading-relaxed">
-                  Кумитаи молиявии DC дархости қарзиро дар давоми 5 дақиқа дида баромада ба рақами мобилии Шумо хабар медиҳад.
+                  Маблағи <strong>{borrowSum} TJS</strong> бо муваффақият ба баланси Шумо илова карда шуд. Баланси умумии кошелёки Шумо зиёд шуд!
                 </p>
                 <button 
                   onClick={() => {
@@ -376,16 +378,16 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                   </div>
                   <input 
                     type="range" 
-                    min="500" 
-                    max="15000" 
-                    step="500"
+                    min="1" 
+                    max="5000" 
+                    step="1"
                     value={borrowSum} 
                     onChange={(e) => setBorrowSum(+e.target.value)}
                     className="w-full accent-blue-500 cursor-pointer"
                   />
                   <div className="flex justify-between text-[10px] text-slate-400 font-bold mt-1">
-                    <span>500 TJS</span>
-                    <span>15,000 TJS</span>
+                    <span>1 TJS</span>
+                    <span>5,000 TJS</span>
                   </div>
                 </div>
 
@@ -423,7 +425,10 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                 </div>
 
                 <button 
-                  onClick={() => setCreditRequested(true)}
+                  onClick={() => {
+                    onDeductBalance(-borrowSum);
+                    setCreditRequested(true);
+                  }}
                   className="w-full bg-[#1479FF] hover:bg-blue-600 text-white font-semibold py-3.5 rounded-2xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <Landmark size={14} />
@@ -553,7 +558,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                       return;
                     }
                     onDeductBalance(price);
-                    onAddTransaction('Пардохти Барқи Душанбе (Коммуналӣ)', -price, 'Коммунальные');
+                    onAddTransaction('Барқи Душанбе (Коммуналӣ)', -price, 'Коммунальные', '№ 34/24912');
                     setElectricityPaid(true);
                   }}
                   className="w-full bg-[#1479FF] hover:bg-blue-600 text-white font-bold py-3 rounded-2xl text-xs transition-all cursor-pointer"
@@ -727,7 +732,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
                       }
                       onDeductBalance(amountVal);
                       setCityCardBalance(prev => prev + amountVal);
-                      onAddTransaction(`Пополнение CityCard (Транспорт)`, -amountVal, 'Транспорт');
+                      onAddTransaction('CityCard', -amountVal, 'Транспорт', '0424 9381 2049');
                       alert(`CityCard бомуваффақият ба маблағи ${amountVal} TJS пополнить шуд!`);
                     }}
                     className="bg-[#1479FF] hover:bg-blue-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition-colors shrink-0 cursor-pointer"

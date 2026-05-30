@@ -95,7 +95,7 @@ export default function App() {
     setBalance((prev) => +(prev - amount).toFixed(2));
   };
 
-  const handleAddTransaction = (title: string, amount: number, category: string) => {
+  const handleAddTransaction = (title: string, amount: number, category: string, receiver?: string) => {
     const pad = (n: number) => n.toString().padStart(2, '0');
     const now = new Date();
     const formattedDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
@@ -108,6 +108,7 @@ export default function App() {
       date: formattedDate,
       type: amount > 0 ? 'transfer_in' : 'payment',
       category,
+      receiver,
     };
 
     setTransactions((prev) => [newTx, ...prev]);
@@ -294,6 +295,10 @@ export default function App() {
             type={activeTransferType}
             balance={balance}
             onClose={() => setActiveTransferType(null)}
+            onGoHome={() => {
+              setActiveTransferType(null);
+              setActiveTab('home');
+            }}
             onTransferComplete={(rec, amt) => {
               handleDeductBalance(amt);
             }}
@@ -328,9 +333,13 @@ export default function App() {
           <MobilePaymentModal 
             balance={balance}
             onClose={() => setShowGlobalMobilePay(false)}
+            onGoHome={() => {
+              setShowGlobalMobilePay(false);
+              setActiveTab('home');
+            }}
             onPay={(provider, phone, amt) => {
               handleDeductBalance(amt);
-              handleAddTransaction(`${provider} Пополнение (+992 ${phone})`, -amt, 'Мобильная связь');
+              handleAddTransaction(provider, -amt, 'Мобильная связь', phone);
             }}
           />
         )}

@@ -5,6 +5,7 @@ interface MobilePaymentModalProps {
   balance: number;
   onClose: () => void;
   onPay: (providerName: string, accountOrPhone: string, amount: number) => void;
+  onGoHome?: () => void;
 }
 
 interface CategoryItem {
@@ -90,6 +91,7 @@ export const MobilePaymentModal: React.FC<MobilePaymentModalProps> = ({
   balance,
   onClose,
   onPay,
+  onGoHome,
 }) => {
   const [page, setPage] = useState<'categories' | 'operators' | 'form'>('categories');
   const [formStep, setFormStep] = useState<'entry' | 'confirm' | 'loading' | 'success'>('entry');
@@ -99,9 +101,10 @@ export const MobilePaymentModal: React.FC<MobilePaymentModalProps> = ({
   // Unified Form state
   const [selectedSub, setSelectedSub] = useState<SubProviderItem | null>(null);
   const [accountNumber, setAccountNumber] = useState('');
-  const [payAmount, setPayAmount] = useState('20');
+  const [payAmount, setPayAmount] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [randomTxId, setRandomTxId] = useState('');
+  const [isSuccessCompleted, setIsSuccessCompleted] = useState(false);
 
   const getMobileSubProviders = (): SubProviderItem[] => {
     return [
@@ -294,13 +297,8 @@ export const MobilePaymentModal: React.FC<MobilePaymentModalProps> = ({
   const handleSubProviderSelect = (sub: SubProviderItem) => {
     setSelectedSub(sub);
     setFormStep('entry');
-    // Set typical defaults for high fidelity feel
-    if (selectedCategory?.id === 'mobile') {
-      setAccountNumber('901458899');
-    } else {
-      setAccountNumber('');
-    }
-    setPayAmount('20');
+    setAccountNumber('');
+    setPayAmount('');
     setErrorMessage('');
     setPage('form');
   };
@@ -331,19 +329,39 @@ export const MobilePaymentModal: React.FC<MobilePaymentModalProps> = ({
   };
 
   const handleConfirmAndExecute = () => {
-    setFormStep('loading');
     const val = FloatWithClamp(payAmount);
+    setIsSuccessCompleted(false);
+    setFormStep('success');
+    setRandomTxId(Math.floor(10000000 + Math.random() * 90000000).toString());
     
     setTimeout(() => {
-      onPay(selectedSub?.name || 'Платеж', (selectedSub?.prefix || '') + accountNumber, val);
-      setRandomTxId(Math.floor(10000000 + Math.random() * 90000000).toString());
-      setFormStep('success');
+      onPay(selectedCategory?.name + ': ' + (selectedSub?.name || 'Платеж'), (selectedSub?.prefix || '') + accountNumber, val);
+      setIsSuccessCompleted(true);
     }, 1200);
   };
 
   const FloatWithClamp = (s: string) => {
     const parsed = parseFloat(s);
     return isNaN(parsed) ? 10 : Math.max(1, parsed);
+  };
+
+  const getFormattedDateTime = () => {
+    const now = new Date();
+    const pad = (num: number) => num.toString().padStart(2, '0');
+    
+    // Format date as DD.MM.YY
+    const day = pad(now.getDate());
+    const month = pad(now.getMonth() + 1);
+    const year = now.getFullYear().toString().slice(-2);
+    const formattedDate = `${day}.${month}.${year}`;
+    
+    // Format time as HH:MM:SS
+    const hours = pad(now.getHours());
+    const minutes = pad(now.getMinutes());
+    const seconds = pad(now.getSeconds());
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+    
+    return { date: formattedDate, time: formattedTime };
   };
 
   const handleBack = () => {
@@ -354,6 +372,7 @@ export const MobilePaymentModal: React.FC<MobilePaymentModalProps> = ({
         // Return to categories
         setPage('categories');
         setFormStep('entry');
+        setIsSuccessCompleted(false);
       } else {
         setPage('operators');
       }
@@ -476,23 +495,25 @@ export const MobilePaymentModal: React.FC<MobilePaymentModalProps> = ({
       
       {/* HEADER RENDERING */}
       {page === 'form' ? (
-        /* HIGH-FIDELITY MOBILE-STYLE RECHARGE HEADER WITH OUTLINED EMPTY STAR */
-        <div className="bg-[#1479FF] text-white pt-5 pb-4 px-5 shrink-0 flex items-center justify-between shadow-md">
+        /* HEADER MATCHING TRANSFERMODAL 100% */
+        <div className="bg-[#1479FF] text-white px-4 py-4 flex items-center justify-between shadow-sm shrink-0">
           <button 
             onClick={handleBack} 
-            className="p-1.5 hover:bg-white/10 rounded-full transition-all cursor-pointer -ml-1 text-white active:scale-95"
+            className="p-1 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
             id="mobile-payment-back-btn"
           >
-            <ChevronLeft size={27} strokeWidth={2.8} />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
           
-          <h2 className="text-[20px] font-bold tracking-tight text-center flex-1 font-sans truncate px-1">
+          <span className="font-semibold text-[17px] tracking-wide truncate max-w-[70%]">
             {selectedSub?.name}
-          </h2>
+          </span>
 
-          <button className="p-1.5 hover:bg-white/10 rounded-full transition-all text-white active:scale-95 cursor-pointer">
-            <svg className="w-[27px] h-[27px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          <button className="p-1 hover:bg-white/10 rounded-full transition-colors cursor-pointer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5.5 h-5.5 text-white/95">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.24.588 1.81l-3.97 2.887a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.887a1 1 0 00-1.17 0l-3.971 2.887c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.887c-.772-.57-.373-1.81.588-1.81h4.907a1 1 0 00.95-.69l1.519-4.674z" fill="currentColor" />
             </svg>
           </button>
         </div>
@@ -602,246 +623,320 @@ export const MobilePaymentModal: React.FC<MobilePaymentModalProps> = ({
             )}
           </div>
         ) : (
-          /* page === 'form' RENDERS THE UNIFIED TRANSACTIONS AND LOADING FLOW */
-          <div className="flex flex-col select-none w-full">
-            {formStep === 'loading' ? (
-              /* progress spinner view */
-              <div className="py-28 text-center flex flex-col items-center justify-center animate-scale-up px-6">
-                <div className="w-18 h-18 bg-[#FFF2E2] rounded-full flex items-center justify-center mb-5">
-                  <svg viewBox="0 0 24 24" fill="none" className="w-[32px] h-[32px] stroke-[#C36C30] animate-spin" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" strokeDasharray="30" strokeDashoffset="10" />
-                  </svg>
+          /* page === 'form' RENDERS THE UNIFIED TRANSACTIONS AND LOADING FLOW MATCHING TRANSFERMODAL */
+          <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col justify-between relative min-h-0 bg-white">
+            
+            <div className="space-y-4">
+              
+              {/* FIELD 1: Account / phone selector (Very rounded card container matching TransferModal) */}
+              <div className="bg-white rounded-[16px] border border-slate-100/80 flex items-center justify-between px-4 py-3.5 shadow-xs">
+                <div className="flex items-center gap-1.5 flex-1 w-full">
+                  {selectedSub?.prefix && (
+                    <span className="text-slate-400 font-bold tracking-tight text-[15.5px] pr-1 font-mono select-none">
+                      {selectedSub.prefix}
+                    </span>
+                  )}
+                  <input 
+                    type="tel"
+                    inputMode="numeric"
+                    placeholder={selectedSub?.placeholder || "Номер/Счет"}
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
+                    className="bg-transparent text-slate-800 font-medium text-[15px] outline-none flex-1 w-full placeholder-slate-400/80 select-text"
+                    id="unified-phone-account-replicant"
+                  />
                 </div>
-                <h4 className="font-black text-[#C56C2B] text-lg">Пардохт ворид гардид...</h4>
-                <p className="text-xs text-slate-500 mt-2 font-medium max-w-xs leading-relaxed">
-                  Лутфан лаҳзае интизор шавед. Пардохт фавран дар давоми 1.2 сония иҷро мегардад.
-                </p>
+                <div className="flex items-center gap-3.5 text-[#1479FF] shrink-0 pl-2">
+                  {/* history */}
+                  <button className="p-0.5 hover:bg-slate-100 rounded-full transition-all active:scale-95 cursor-pointer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5.5 h-5.5 opacity-80 hover:opacity-100 cursor-pointer transition-opacity">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                  </button>
+                  {/* contacts */}
+                  <button className="p-0.5 hover:bg-slate-100 rounded-full transition-all active:scale-95 cursor-pointer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5.5 h-5.5 opacity-80 hover:opacity-100 cursor-pointer transition-opacity">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            ) : formStep === 'confirm' ? (
-              /* "ПОДТВЕРЖДАЮ" SCREEN - SECOND STAGE OF THE FLOW */
-              <div className="w-full flex flex-col pt-5 px-5 max-w-[400px] mx-auto animate-scale-up">
-                
-                {/* Visual confirmation ticket */}
-                <div className="bg-white rounded-[24px] border border-slate-200/50 shadow-sm p-5 w-full flex flex-col items-center text-center">
-                  
-                  {/* Circular Avatar */}
-                  <div className="scale-110 mb-3">
-                    {selectedSub && renderLogoOfSub(selectedSub)}
+
+              {/* FIELD 2: Sum component */}
+              <div className="bg-white rounded-[16px] border border-slate-100/80 flex items-center px-4 py-3.5 shadow-xs font-sans">
+                <span className="text-slate-400 font-medium text-[15.5px] mr-2 select-none">TJS</span>
+                <input 
+                  type="tel"
+                  inputMode="decimal"
+                  placeholder="Сумма"
+                  value={payAmount}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+                    const parts = cleaned.split('.');
+                    if (parts.length > 2) return;
+                    setPayAmount(cleaned);
+                  }}
+                  className="bg-transparent text-slate-800 font-bold text-[15.5px] outline-none flex-1 w-full select-text"
+                  id="unified-amount-replicant"
+                />
+              </div>
+
+              {/* FIELD 3: Comment Input */}
+              <div className="bg-white rounded-[16px] border border-slate-100/80 px-4 py-3.5 shadow-xs font-sans">
+                <input 
+                  type="text"
+                  placeholder="Комментарий"
+                  className="bg-transparent text-slate-800 font-medium text-[15px] outline-none w-full placeholder-slate-400/80"
+                />
+              </div>
+
+              {/* Helper text minimum amount */}
+              <div className="text-right text-[11.5px] text-slate-400/90 font-medium select-none pr-1">
+                Мин. сумма: {selectedCategory?.id === 'mobile' ? '1.00 TJS' : '0.00 TJS'}
+              </div>
+
+              {/* UNIVERSAL HORIZONTAL CARDS SLIDER (TRANSFER STYLE) */}
+              <div className="py-2.5">
+                <div className="flex gap-3 overflow-x-auto pb-1.5 scrollbar-none">
+                  {/* Card 1: DBC balance card */}
+                  <div className="min-w-[116px] w-[116px] bg-[#1479FF] text-white p-3 rounded-[15px] shadow-sm flex flex-col justify-between h-[72px] shrink-0 relative overflow-hidden">
+                    <div className="absolute top-[-30px] right-[-30px] w-14 h-14 bg-white/10 rounded-full blur-xl pointer-events-none" />
+                    <span className="text-[9px] uppercase font-bold tracking-tight text-white/85 block">DBC****9372</span>
+                    <div>
+                      <span className="text-xs font-black font-mono tracking-tight whitespace-nowrap">{balance.toFixed(2)} TJS</span>
+                    </div>
                   </div>
 
-                  <h3 className="text-slate-700 font-extrabold text-[17px] mb-1">Тасдиқи пардохт</h3>
-                  <p className="text-[#1479FF] font-bold text-xs mb-5 uppercase tracking-wide">Информация о платеже</p>
+                  {/* Card 2: KREDITY with red NEW badge */}
+                  <div className="min-w-[116px] w-[116px] bg-gradient-to-tr from-[#1A5AE5] via-[#4382FC] to-[#FFC53D] text-white p-3 rounded-[15px] shadow-sm flex flex-col justify-between h-[72px] shrink-0 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 bg-red-600 px-1.5 py-0.5 rounded-bl-lg text-[6px] font-extrabold uppercase tracking-widest text-white shadow-xs">
+                      NEW
+                    </div>
+                    <span className="text-[9px] uppercase font-bold tracking-tight text-white/95 block font-semibold font-sans">КРЕДИТЫ</span>
+                    <div>
+                      <span className="text-xs font-black font-mono leading-none">-</span>
+                    </div>
+                  </div>
 
-                  {/* Fact Sheet */}
-                  <div className="w-full space-y-3.5 text-left border-t border-slate-100 pt-4 text-[14px]">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-bold">Хизматрасонӣ:</span>
-                      <span className="text-slate-700 font-extrabold text-right">
+                  {/* Card 3: Dynamic specific brand card */}
+                  <div className="min-w-[116px] w-[116px] bg-white border border-slate-100 text-slate-800 p-3 rounded-[15px] shadow-xs flex flex-col justify-between h-[72px] shrink-0 select-none">
+                    <span className="text-[9px] font-bold text-slate-400 tracking-tight block uppercase truncate">
+                      {(selectedSub?.name || 'ПАР').slice(0, 3).toUpperCase()}****
+                    </span>
+                    <div>
+                      <span className="text-xs font-extrabold font-mono text-slate-300 leading-none">...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Informative description paragraph under items matching TransferModal style */}
+              <p className="text-[10.5px] leading-relaxed text-slate-500 font-medium px-1 antialiased text-justify font-sans">
+                Для пополнения {selectedSub?.name || 'услуги'} укажите корректный номер договора или телефон получателя сотового оператора и введите сумму. Зачисление без комиссии. Если вы отправили деньги не туда, обратитесь к получателю платежа или в поддержку. Манибэк возможен только по согласию получателя.
+              </p>
+
+              {errorMessage && (
+                <p className="text-center font-bold text-xs text-red-500 animate-pulse">
+                  {errorMessage}
+                </p>
+              )}
+
+            </div>
+
+            {/* BOTTOM ACTION BUTTON: "ДАЛЕЕ" */}
+            <div className="pt-4 pb-2">
+              <button
+                type="button"
+                onClick={handleProceedToConfirm}
+                className="w-full bg-[#FF7020] hover:bg-[#E05E12] text-white font-black py-4 rounded-[20px] text-[15.5px] tracking-wide transition-all cursor-pointer text-center select-none shadow-md shadow-orange-500/10 active:scale-[0.98] duration-100"
+                id="unified-pay-dalee-btn"
+              >
+                Далее
+              </button>
+            </div>
+
+            {/* ==========================================
+                CONFIRMATION DRAWER (EXACT REPLICA)
+               ========================================== */}
+            {formStep === 'confirm' && (
+              <div className="absolute inset-x-0 bottom-0 top-0 bg-[#07162C]/40 z-30 flex flex-col justify-end animate-fade-in duration-200">
+                <div className="absolute inset-0" onClick={() => setFormStep('entry')} />
+                
+                {/* Drawer bottom container */}
+                <div className="relative bg-white rounded-t-[30px] shadow-2xl z-40 px-5 pt-3.5 pb-6 animate-slide-up flex flex-col w-full border-t border-slate-100">
+                  
+                  {/* Handle indicator bar */}
+                  <div className="w-11 h-1 bg-[#E2E8F0] rounded-full mx-auto mb-4.5 shrink-0" />
+
+                  {/* Info Header Box in light blue */}
+                  <div className="bg-[#EDF5FF] border border-[#D5E6FF]/60 rounded-[18px] py-4.5 px-4 text-center mb-4.5 shrink-0">
+                    <span className="text-[#6C8DAE] text-[12.5px] font-medium tracking-wide block font-sans">
+                      Подтверждение платежа
+                    </span>
+                    <span className="text-[#1479FF] text-[31px] font-black tracking-tight block mt-1 leading-none font-sans">
+                      {Number(payAmount || 0).toFixed(2)} TJS
+                    </span>
+                  </div>
+
+                  {/* Gray rows container with complete alignment */}
+                  <div className="bg-[#F8F9FA] rounded-[24px] p-4 space-y-3 mb-6 shrink-0 border border-slate-100/40">
+                    
+                    <div className="flex items-center justify-between text-[13px] leading-tight font-sans">
+                      <span className="text-[#8B9DAE] font-medium">Хизматрасонӣ:</span>
+                      <span className="text-slate-800 font-extrabold text-right max-w-[65%] truncate">
                         {selectedCategory?.name || 'Пардохтҳо'}
                       </span>
                     </div>
 
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-bold">Провайдер:</span>
-                      <span className="text-slate-700 font-extrabold text-right">{selectedSub?.name}</span>
+                    <div className="flex items-center justify-between text-[13px] leading-tight font-sans pt-1 border-t border-slate-200/5 font-sans">
+                      <span className="text-[#8B9DAE] font-medium">Поставщик:</span>
+                      <span className="text-slate-800 font-extrabold text-right max-w-[65%] truncate font-sans">
+                        {selectedSub?.name}
+                      </span>
                     </div>
 
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-bold">Номер/Счет:</span>
-                      <span className="text-slate-800 font-black font-mono tracking-tight text-right">
+                    <div className="flex items-center justify-between text-[13px] leading-tight font-sans pt-1 border-t border-slate-200/5">
+                      <span className="text-[#8B9DAE] font-medium">Номер/Счет</span>
+                      <span className="text-slate-800 font-extrabold font-mono text-right">
                         {selectedSub?.prefix ? `${selectedSub.prefix} ` : ''}{accountNumber}
                       </span>
                     </div>
 
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-bold">Комиссия банка:</span>
-                      <span className="text-[#20C997] font-black text-right">0.0% (Бе фоиз)</span>
+                    <div className="flex items-center justify-between text-[13px] leading-tight font-sans pt-1 border-t border-slate-200/5">
+                      <span className="text-[#8B9DAE] font-medium">Способ оплаты:</span>
+                      <span className="text-slate-800 font-extrabold font-mono text-right">9762 **** **** 9372</span>
                     </div>
 
-                    <div className="flex justify-between border-t border-slate-100 pt-3.5">
-                      <span className="text-slate-800 font-extrabold">Ҳамагӣ барои пардохт:</span>
-                      <span className="text-[#1479FF] font-black text-lg tracking-tight">
-                        {payAmount} TJS
-                      </span>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Submitting Button */}
-                <div className="mt-8 pb-8">
-                  <button
-                    onClick={handleConfirmAndExecute}
-                    className="w-full bg-[#FD7028] hover:bg-[#E55F1B] active:scale-97 text-white font-extrabold py-4 rounded-[24px] text-[16.5px] tracking-wide transition-all shadow-lg shadow-orange-500/15 cursor-pointer text-center"
-                    id="confirm-execute-payment-btn"
-                  >
-                    Подтверждаю
-                  </button>
-                </div>
-
-              </div>
-            ) : formStep === 'success' ? (
-              /* "НА ГЛАВНУЮ" FINAL RECEIPT SCREEN */
-              <div className="w-full flex flex-col pt-6 px-5 max-w-[420px] mx-auto animate-scale-up">
-                
-                <div className="bg-white rounded-[28px] border border-slate-200/60 shadow-sm p-6 w-full flex flex-col items-center text-center">
-                  
-                  {/* Beautiful big circular check badge */}
-                  <div className="w-16 h-16 bg-[#E8F8F5] rounded-full flex items-center justify-center text-[#20C997] mb-4">
-                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </div>
-
-                  <h3 className="text-slate-800 font-black text-[19px] leading-tight mb-2">Пардохт бомуваффақият анҷом ёфт!</h3>
-                  <p className="text-slate-400 font-semibold text-xs mb-6 leading-relaxed max-w-xs">
-                    Варақаи электронии пардохти шумо қабул ва иҷро шуд.
-                  </p>
-
-                  <div className="w-full border-t border-dashed border-slate-200 pt-4.5 space-y-3.5 text-left text-[14px]">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-bold">Рақами квитансия:</span>
-                      <span className="text-slate-700 font-black font-mono tracking-wider">#{randomTxId}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-bold">Суратҳисоби воридшуда:</span>
-                      <span className="text-slate-700 font-extrabold font-mono">
-                        {selectedSub?.prefix ? `${selectedSub.prefix} ` : ''}{accountNumber}
+                    <div className="flex items-center justify-between text-[13px] leading-tight font-sans pt-2 border-t border-slate-200/50">
+                      <span className="text-[#8B9DAE] font-bold">Сумма списания:</span>
+                      <span className="text-slate-800 font-extrabold font-mono text-right text-[13.5px]">
+                        {Number(payAmount || 0).toFixed(2)} TJS
                       </span>
                     </div>
 
-                    <div className="flex justify-between">
-                      <span className="text-slate-400 font-bold">Таърихи транзаксия:</span>
-                      <span className="text-slate-600 font-semibold">имрӯз, {new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
-                    </div>
-
-                    <div className="flex justify-between border-t border-slate-100 pt-3.5">
-                      <span className="text-slate-800 font-black">Суммаи пардохтшуда:</span>
-                      <span className="text-[#20C997] font-black text-lg">
-                        {payAmount} TJS
-                      </span>
-                    </div>
                   </div>
 
-                </div>
-
-                {/* Return to main screen dynamic button */}
-                <div className="mt-8 pb-8">
-                  <button
-                    onClick={handleBack}
-                    className="w-full bg-[#1479FF] hover:bg-blue-600 active:scale-97 text-white font-extrabold py-3.5 rounded-[24px] text-[16.5px] tracking-wide transition-all shadow-md shadow-blue-500/10 cursor-pointer text-center"
-                    id="back-to-main-btn"
-                  >
-                    На главную
-                  </button>
-                </div>
-
-              </div>
-            ) : (
-              /* formStep === 'entry' STAGE — ALL PAYMENTS LOOK EXACTLY SIMILAR TO THE SCREENSHOT 3 */
-              <div className="w-full flex flex-col pt-4 max-w-[420px] mx-auto">
-                
-                {/* FIELD 1: Account / phone selector (Very rounded card container) */}
-                <div className="bg-white rounded-[24px] border border-slate-200/40 shadow-xs mx-5 px-5 py-3.5 flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-1">
-                    {selectedSub?.prefix && (
-                      <span className="text-slate-400 font-black tracking-tight font-mono text-[16px] select-none">
-                        {selectedSub.prefix}
-                      </span>
-                    )}
-                    <input 
-                      type="text" 
-                      placeholder={selectedSub?.placeholder || "Номер/Счет"}
-                      value={accountNumber}
-                      onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
-                      className="bg-transparent text-slate-700 font-bold text-[16px] outline-none flex-1 placeholder-slate-300 select-text"
-                      id="unified-phone-account-replicant"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0 text-[#1479FF]">
-                    {/* history */}
-                    <button className="p-1 px-1.5 hover:bg-slate-100 rounded-full transition-all active:scale-95 cursor-pointer">
-                      <svg className="w-[21px] h-[21px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
-                    </button>
-                    {/* passport / contacts booklet */}
-                    <button className="p-1 px-1.5 hover:bg-slate-100 rounded-full transition-all active:scale-95 cursor-pointer">
-                      <svg className="w-[20px] h-[20px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                        <line x1="16" y1="13" x2="8" y2="13" />
-                        <line x1="16" y1="17" x2="8" y2="17" />
-                        <polyline points="10 9 9 9 8 9" />
-                      </svg>
+                  {/* The big orange submit wrapper */}
+                  <div className="shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleConfirmAndExecute}
+                      className="w-full bg-[#FF7020] hover:bg-[#E05E12] text-white font-extrabold py-4 rounded-[20px] text-[16px] tracking-wide transition-all cursor-pointer text-center select-none shadow-md shadow-orange-500/10 active:scale-[0.98] duration-100"
+                    >
+                      Подтверждаю
                     </button>
                   </div>
+
                 </div>
-
-                {/* FIELD 2: Sum component (Very rounded container) */}
-                <div className="bg-white rounded-[24px] border border-slate-200/40 shadow-xs mx-5 mt-4 px-5 py-4">
-                  <input 
-                    type="text" 
-                    placeholder="TJS Сумма"
-                    value={payAmount}
-                    onChange={(e) => setPayAmount(e.target.value.replace(/\D/g, ''))}
-                    className="bg-transparent text-slate-700 font-bold text-[16px] outline-none w-full placeholder-slate-300 select-text"
-                    id="unified-amount-replicant"
-                  />
-                </div>
-
-                {/* Helper text minimum amount */}
-                <div className="text-right text-slate-400 font-semibold text-[13px] px-6 mt-2 mr-1">
-                  Мин. сумма: 0.00 TJS
-                </div>
-
-                {/* UNIVERSAL HORIZONTAL CARDS */}
-                <div className="flex items-center gap-3 px-5 mt-6 w-full overflow-x-auto no-scrollbar">
-                  {/* DBC balance card */}
-                  <div className="w-[115px] h-[78px] shrink-0 rounded-[20px] p-3 text-white flex flex-col justify-between bg-[#1479FF] shadow-xs select-none">
-                    <span className="text-[10px] font-bold tracking-tight opacity-90">DBC****9372</span>
-                    <span className="text-[14px] font-black tracking-tight">{balance.toFixed(2)} TJS</span>
-                  </div>
-
-                  {/* KREDITY with red NEW badge */}
-                  <div className="w-[115px] h-[78px] shrink-0 rounded-[20px] p-3 text-white flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-[#1E5AD6] via-[#DDAA55] to-[#D57E3A] shadow-xs select-none">
-                    <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-bold tracking-tight uppercase leading-none mt-0.5">Кредиты</span>
-                      <span className="bg-[#E7311C] text-[8px] px-1.5 py-0.5 rounded-md font-extrabold tracking-wide uppercase scale-90 leading-none">NEW</span>
-                    </div>
-                    <span className="text-[13px] font-black leading-none mb-1">-</span>
-                  </div>
-
-                  {/* Dynamic brand specific cards */}
-                  <div className="w-[115px] h-[78px] shrink-0 rounded-[20px] p-3 bg-white border border-slate-200/60 text-slate-700 flex flex-col justify-between shadow-xs select-none">
-                    <span className="text-[10px] font-semibold tracking-tight text-slate-400 uppercase truncate">
-                      {(selectedSub?.name || 'ПАР').slice(0, 3)}****....
-                    </span>
-                    <span className="text-[13px] font-extrabold text-slate-400 tracking-tight mb-0.5">...</span>
-                  </div>
-                </div>
-
-                {errorMessage && (
-                  <p className="text-center font-bold text-xs text-red-500 mt-5 mb-1 px-5 animate-pulse">
-                    {errorMessage}
-                  </p>
-                )}
-
-                {/* BOTTOM ACTION BUTTON: "ДАЛЕЕ" */}
-                <div className="px-5 mt-8 pb-6">
-                  <button
-                    onClick={handleProceedToConfirm}
-                    className="w-full bg-[#FD7028] hover:bg-[#E55F1B] active:scale-97 text-white font-extrabold py-3.5 rounded-[24px] text-[17px] tracking-wide transition-all shadow-lg shadow-orange-500/15 cursor-pointer text-center block"
-                    id="unified-pay-dalee-btn"
-                  >
-                    Далее
-                  </button>
-                </div>
-
               </div>
             )}
+
+            {/* ==========================================
+                SUCCESS RECEIPT DRAWER (EXACT 100% REPLICA)
+               ========================================== */}
+            {formStep === 'success' && (
+              <div className="absolute inset-x-0 bottom-0 top-0 bg-[#07162C]/40 z-30 flex flex-col justify-end animate-fade-in duration-200">
+                <div className="absolute inset-0" onClick={isSuccessCompleted ? handleBack : undefined} />
+                
+                {/* Drawer bottom container */}
+                <div className="relative bg-white rounded-t-[30px] shadow-2xl z-40 px-5 pt-3.5 pb-6 animate-slide-up flex flex-col w-full border-t border-slate-100">
+                  
+                  {/* Handle indicator bar */}
+                  <div className="w-11 h-1 bg-[#E2E8F0] rounded-full mx-auto mb-5 shrink-0" />
+
+                  {/* Clock or Check Badge */}
+                  <div className="flex justify-center mt-1 mb-3.5 select-none animate-scale-up">
+                    {isSuccessCompleted ? (
+                      <div className="w-[74px] h-[74px] bg-[#E5F9F6] rounded-full flex items-center justify-center">
+                        <div className="w-[32px] h-[32px] rounded-full border-[2.2px] border-[#20C997] bg-[#E5F9F6] flex items-center justify-center text-[#20C997]">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className="w-[11px] h-[11px]">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-[74px] h-[74px] bg-[#FFF2E2] rounded-full flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" fill="none" className="w-[32px] h-[32px] stroke-[#C36C30]" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9" />
+                          <polyline points="12 7 12 12 15 12" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Dynamic Success Mode Title */}
+                  <h2 className={`font-bold text-[22.5px] text-center tracking-tight mb-5 font-sans leading-none transition-colors duration-300 ${
+                    isSuccessCompleted ? 'text-[#1479FF]' : 'text-[#C56C2B]'
+                  }`}>
+                    {isSuccessCompleted ? 'Платеж выполнен' : 'Выполняется'}
+                  </h2>
+
+                  {/* Receipt facts card */}
+                  <div className="bg-[#F8F9FA] rounded-[24px] p-5 space-y-4 mb-6 shrink-0 border border-slate-100/40 text-[13.5px] leading-tight font-sans">
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#8B9DAE] font-medium font-sans">Хизматрасонӣ:</span>
+                      <span className="text-slate-800 font-extrabold pr-0.5 max-w-[60%] truncate font-sans">
+                        {selectedCategory?.name || 'Пардохти хизмати'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/5 font-sans">
+                      <span className="text-[#8B9DAE] font-medium font-sans">Поставщик:</span>
+                      <span className="text-slate-800 font-extrabold pr-0.5 max-w-[60%] truncate font-sans">
+                        {selectedSub?.name}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/5">
+                      <span className="text-[#8B9DAE] font-medium">Получатель:</span>
+                      <span className="text-slate-800 font-extrabold font-mono">
+                        {selectedSub?.prefix ? `${selectedSub.prefix} ` : ''}{accountNumber}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/5">
+                      <span className="text-[#8B9DAE] font-medium">К зачислению:</span>
+                      <span className="text-slate-800 font-extrabold font-mono text-right">
+                        {payAmount ? Number(payAmount).toFixed(2) : '1.00'} TJS
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/5 font-sans">
+                      <span className="text-[#8B9DAE] font-medium font-sans">Дата & Время:</span>
+                      <span className="text-slate-800 font-extrabold font-mono text-right">
+                        {getFormattedDateTime().date}, {getFormattedDateTime().time}
+                      </span>
+                    </div>
+
+                  </div>
+
+                  {/* Return Button */}
+                  <div className="shrink-0">
+                    <button
+                      type="button"
+                      disabled={!isSuccessCompleted}
+                      onClick={() => {
+                        if (onGoHome) {
+                          onGoHome();
+                        } else {
+                          handleBack();
+                        }
+                      }}
+                      className="w-full bg-[#1479FF] hover:bg-[#0c66db] text-white font-extrabold py-4 rounded-[20px] text-[16.5px] tracking-wide transition-all text-center select-none shadow-md shadow-blue-500/10 duration-200 font-sans cursor-pointer active:scale-[0.98] disabled:opacity-50"
+                    >
+                      На главную
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            )}
+
           </div>
         )}
       </div>

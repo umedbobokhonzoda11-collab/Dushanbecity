@@ -189,13 +189,21 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
     const formattedTimeOnly = tx.date.split(' ')[1] || '12:00:00';
     const isPhoneTx = /^\d+$/.test(tx.title);
 
+    let providerVal = isPhoneTx ? 'DC (по номеру телефона)' : (tx.category === 'Мобильная связь' ? 'Мобильная связь' : (tx.category || 'DC перевод'));
+    if (tx.receiver) {
+      providerVal = tx.title;
+      if (providerVal.includes(': ')) {
+        providerVal = providerVal.split(': ')[1];
+      }
+    }
+
     setSelectedReceipt({
       date: formattedDateOnly,
       time: formattedTimeOnly,
       opNumber: generateOpNumber(tx.id),
-      provider: isPhoneTx ? 'DC (по номеру телефона)' : (tx.category === 'Мобильная связь' ? 'Мобильная связь' : (tx.category || 'DC перевод')),
+      provider: providerVal,
       sender: '9762***9372',
-      receiver: displayTitle,
+      receiver: tx.receiver || displayTitle,
       amount: Math.abs(tx.amount).toFixed(2),
       fee: '0.00',
       status: 'Успешный',
@@ -272,20 +280,28 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
               const parts = tx.title.split(': ');
               const displayTitle = parts[1] || tx.title;
               const formattedTime = tx.date.split(' ')[1] || '12:00:00';
+              const isCredit = tx.category === 'Кредиты';
 
               return (
                 <div 
                   key={tx.id} 
-                  onClick={() => handleSelectDynamic(tx)}
-                  className="py-3 flex items-start justify-between cursor-pointer hover:bg-slate-50/80 active:scale-[0.99] transition-all duration-150 rounded-xl px-2 -mx-2"
+                  onClick={isCredit ? undefined : () => handleSelectDynamic(tx)}
+                  className={`py-3 flex items-start justify-between transition-all duration-150 rounded-xl px-2 -mx-2 ${
+                    isCredit 
+                      ? 'cursor-default select-none' 
+                      : 'cursor-pointer hover:bg-slate-50/80 active:scale-[0.99]'
+                  }`}
                 >
                   <div className="space-y-0.5 text-left">
                     <div className="text-[10px] text-slate-400 font-mono font-medium tracking-tight">9762***9372</div>
-                    <div className="text-[16.5px] font-extrabold text-[#0D2440] tracking-tight leading-tight py-0.5 truncate max-w-[190px]">
-                      {tx.category === 'Мобильная связь' ? displayTitle : tx.title}
+                    <div className="text-[16.5px] font-extrabold text-[#0D2440] tracking-tight leading-tight py-0.5 truncate max-w-[210px]">
+                      {tx.receiver ? tx.receiver : (tx.category === 'Мобильная связь' ? displayTitle : tx.title)}
                     </div>
                     <div className="text-[10.5px] text-slate-400 font-medium">
-                      {/^\d+$/.test(tx.title) ? 'DC (по номеру телефона)' : (tx.category || 'DC перевод')}
+                      {tx.receiver 
+                        ? (tx.title.includes(': ') ? tx.title.split(': ')[1] : tx.title)
+                        : (/^\d+$/.test(tx.title) ? 'DC (по номеру телефона)' : (tx.category || 'DC перевод'))
+                      }
                     </div>
                   </div>
                   <div className="text-right flex flex-col items-end shrink-0">
@@ -418,7 +434,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
       {/* 7. HIGH-FIDELITY RECEIPT MODALS ATTACHED DIRECTLY MATCHING THE USER'S PHOTO 100% */}
       {selectedReceipt && (
         <div className="fixed inset-0 bg-[#07162C]/35 z-50 flex items-end justify-center pb-0 px-0 sm:items-center sm:p-4 animate-fade-in text-slate-800">
-          <div className="bg-white w-full sm:max-w-[365px] rounded-none overflow-hidden shadow-2xl flex flex-col justify-between h-[calc(100vh-56px)] sm:h-auto sm:max-h-[92vh] animate-slide-up border border-slate-100">
+          <div className="bg-white w-full sm:max-w-[410px] rounded-none overflow-hidden shadow-2xl flex flex-col justify-between h-[calc(100vh-56px)] sm:h-auto sm:max-h-[92vh] animate-slide-up border border-slate-100">
             
             {/* Top sheet drag handle */}
             <div className="w-10 h-0.75 bg-[#E2E8F0] rounded-full mx-auto mt-2.5 mb-1 shrink-0" />
@@ -483,10 +499,15 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-[#8393A1] font-medium">Номер операции:</span>
-                  <span className="font-black text-[#0D2440] text-right font-sans select-all">
-                    {selectedReceipt.opNumber}
+                <div className="flex items-center justify-between bg-slate-50/20 py-1 px-1.5 rounded-lg">
+                  <div className="flex items-center gap-1.5 opacity-[0.92] select-all">
+                    <span className="text-[#8393A1] font-medium">Номер:</span>
+                    <span className="font-black text-[#0D2440]/92 font-sans">
+                      {selectedReceipt.opNumber}
+                    </span>
+                  </div>
+                  <span className="font-black text-[#0D2440] font-sans text-[13px]">
+                    {selectedReceipt.amount} TJS
                   </span>
                 </div>
 
@@ -512,13 +533,6 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[#8393A1] font-medium">Сумма операции:</span>
-                  <span className="font-black text-[#0D2440] text-right font-sans text-[13px]">
-                    {selectedReceipt.amount}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
                   <span className="text-[#8393A1] font-medium">Комиссия::</span>
                   <span className="font-black text-[#0D2440] text-right font-sans">
                     {selectedReceipt.fee}
@@ -538,8 +552,8 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({
               <div className="h-px bg-slate-100 w-full my-3.5" />
 
               {/* Precise Blue Seal/Stamp representing Completed Operation */}
-              <div className="flex justify-center select-none my-3">
-                <div className="border-[1.5px] border-[#1176F2] rounded-[4px] px-6 py-1.5 text-center text-[#1176F2] font-black max-w-[210px] uppercase">
+              <div className="flex justify-center select-none my-3 opacity-90">
+                <div className="border-[1.5px] border-[#1176F2] rounded-none px-6 py-1.5 text-center text-[#1176F2] font-black max-w-[210px] uppercase">
                   <div className="font-bold text-[8px] normal-case tracking-normal mb-0.5 text-[#1176F2]/90">
                     ЗАО «Душанбе Сити Банк»
                   </div>
