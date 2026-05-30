@@ -7,12 +7,14 @@ interface CategoryGridProps {
   balance: number;
   onDeductBalance: (amount: number) => void;
   onAddTransaction: (title: string, amount: number, category: string) => void;
+  onOpenPayment?: () => void;
 }
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({
   balance,
   onDeductBalance,
   onAddTransaction,
+  onOpenPayment,
 }) => {
   const [activeModal, setActiveModal] = useState<'payment' | 'cards' | 'credits' | 'deposits' | 'homes' | 'documents' | 'citycard' | 'news' | null>(null);
   const [cityCardBalance, setCityCardBalance] = useState(12.50);
@@ -42,7 +44,13 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
         
         {/* CARD 1: Оплата услуг (Spans 2 columns) */}
         <div 
-          onClick={() => setActiveModal('payment')}
+          onClick={() => {
+            if (onOpenPayment) {
+              onOpenPayment();
+            } else {
+              setActiveModal('payment');
+            }
+          }}
           id="block-services-payment"
           className="col-span-2 bg-white border border-slate-100/75 hover:bg-slate-50/40 rounded-[20px] p-4 h-[100px] flex flex-col justify-between relative overflow-hidden cursor-pointer shadow-xs active:scale-[0.97] transition-all duration-200"
         >

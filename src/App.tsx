@@ -224,6 +224,7 @@ export default function App() {
                     balance={balance}
                     onDeductBalance={handleDeductBalance}
                     onAddTransaction={handleAddTransaction}
+                    onOpenPayment={() => setShowGlobalMobilePay(true)}
                   />
 
                 </div>
